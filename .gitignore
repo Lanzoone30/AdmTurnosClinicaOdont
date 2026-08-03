@@ -1,21 +1,12 @@
-# Maven
+.opencode/
 /target/
 *.class
-
-# IDE
 .idea/
 *.iml
 .vscode/
 .classpath
 .project
+bd/
+Documentacion/
 .settings/
-
-# Herramientas de desarrollo
-.opencode/
-
-# Datos personales (no subir al repo)
-/Documentacion/
-/bd/
-
-# Sistema
 .DS_Store
