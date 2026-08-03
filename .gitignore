@@ -1,1 +1,21 @@
-/ClinicaOdontologica/target/
+# Maven
+/target/
+*.class
+
+# IDE
+.idea/
+*.iml
+.vscode/
+.classpath
+.project
+.settings/
+
+# Herramientas de desarrollo
+.opencode/
+
+# Datos personales (no subir al repo)
+/Documentacion/
+/bd/
+
+# Sistema
+.DS_Store
