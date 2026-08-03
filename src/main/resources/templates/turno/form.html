@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head th:replace="~{fragments/layout :: head('Turnos')}"></head>
+
+<body class="app">
+
+    <aside th:replace="~{fragments/layout :: sidebar}"></aside>
+
+    <div class="app-main">
+        <header th:replace="~{fragments/layout :: topbar}"></header>
+
+        <main class="app-content">
+            <h1 class="page-title" th:text="${turno != null ? 'Edición de Turno' : 'Alta Turnos'}">
+                Alta Turnos</h1>
+            <p class="page-subtitle">Asigne un turno seleccionando el odontólogo y el paciente.</p>
+
+            <div class="panel">
+                <div class="panel-body">
+                    <form th:action="${turno != null} ? @{/turnos/editar/{id}(id=${turno.id})} : @{/turnos/nuevo}"
+                        method="post">
+                        <div class="form-grid">
+                            <div class="field">
+                                <label class="field-label" for="afeccion">Afección</label>
+                                <input class="input" type="text" id="afeccion" name="afeccion"
+                                    th:value="${turno != null ? turno.afeccion : ''}"
+                                    placeholder="Ej: Dolor de muelas">
+                            </div>
+                            <div class="field">
+                                <label class="field-label" for="fechaTurno">Fecha</label>
+                                <input class="input" type="date" id="fechaTurno" name="fechaTurno"
+                                    th:value="${turno != null ? #temporals.format(turno.fechaTurno, 'yyyy-MM-dd') : ''}"
+                                    required>
+                            </div>
+                            <div class="field">
+                                <label class="field-label" for="horaTurno">Hora</label>
+                                <input class="input" type="time" id="horaTurno" name="horaTurno"
+                                    th:value="${turno != null ? #temporals.format(turno.horaTurno, 'HH:mm') : ''}"
+                                    required>
+                            </div>
+                            <div class="field">
+                                <label class="field-label" for="odontologoId">Odontólogo</label>
+                                <select class="select" id="odontologoId" name="odontologoId" required>
+                                    <option value="">Seleccionar odontólogo</option>
+                                    <option th:each="odontologo : ${odontologos}"
+                                        th:value="${odontologo.id}"
+                                        th:text="${odontologo.nombre + ' ' + odontologo.apellido}"
+                                        th:selected="${turno != null && turno.odontologo != null && turno.odontologo.id == odontologo.id}">
+                                        Odontólogo
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="field">
+                                <label class="field-label" for="pacienteId">Paciente</label>
+                                <select class="select" id="pacienteId" name="pacienteId" required>
+                                    <option value="">Seleccionar paciente</option>
+                                    <option th:each="paciente : ${pacientes}"
+                                        th:value="${paciente.id}"
+                                        th:text="${paciente.nombre + ' ' + paciente.apellido}"
+                                        th:selected="${turno != null && turno.paciente != null && turno.paciente.id == paciente.id}">
+                                        Paciente
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="actions mt-24">
+                            <button class="btn btn-primary" type="submit"
+                                th:text="${turno != null ? 'Guardar Modificación' : 'Crear Turno'}">
+                                Crear Turno
+                            </button>
+                            <a class="btn btn-ghost" th:href="@{/turnos}">Cancelar</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </main>
+
+        <footer th:replace="~{fragments/layout :: footer}"></footer>
+    </div>
+
+    <div th:replace="~{fragments/layout :: scripts}"></div>
+
+</body>
+</html>

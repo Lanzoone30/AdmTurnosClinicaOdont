@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head th:replace="~{fragments/layout :: head('Pacientes')}"></head>
+
+<body class="app">
+
+    <aside th:replace="~{fragments/layout :: sidebar}"></aside>
+
+    <div class="app-main">
+        <header th:replace="~{fragments/layout :: topbar}"></header>
+
+        <main class="app-content">
+            <h1 class="page-title" th:text="${paciente.id == null ? 'Alta Pacientes' : 'Edición de Paciente'}">
+                Alta Pacientes</h1>
+            <p class="page-subtitle">Complete los datos del paciente.</p>
+
+            <div class="panel">
+                <div class="panel-body">
+                    <form th:object="${paciente}"
+                        th:action="${paciente.id == null} ? @{/pacientes/nuevo} : @{/pacientes/editar/{id}(id=${paciente.id})}"
+                        method="post">
+                        <div class="form-grid">
+                            <div class="field">
+                                <label class="field-label" for="dni">DNI</label>
+                                <input class="input" type="text" id="dni" name="dni"
+                                    th:value="*{dni}" placeholder="Ej: 30.123.456" required>
+                            </div>
+                            <div class="field">
+                                <label class="field-label" for="nombre">Nombre</label>
+                                <input class="input" type="text" id="nombre" name="nombre"
+                                    th:value="*{nombre}" placeholder="Nombre" required>
+                            </div>
+                            <div class="field">
+                                <label class="field-label" for="apellido">Apellido</label>
+                                <input class="input" type="text" id="apellido" name="apellido"
+                                    th:value="*{apellido}" placeholder="Apellido" required>
+                            </div>
+                            <div class="field">
+                                <label class="field-label" for="telefono">Teléfono</label>
+                                <input class="input" type="text" id="telefono" name="telefono"
+                                    th:value="*{telefono}" placeholder="Teléfono">
+                            </div>
+                            <div class="field">
+                                <label class="field-label" for="direccion">Dirección</label>
+                                <input class="input" type="text" id="direccion" name="direccion"
+                                    th:value="*{direccion}" placeholder="Dirección">
+                            </div>
+                            <div class="field">
+                                <label class="field-label" for="fechaNac">Fecha de nacimiento</label>
+                                <input class="input" type="date" id="fechaNac" name="fechaNac"
+                                    th:value="*{fechaNac}">
+                            </div>
+                        </div>
+
+                        <div class="actions mt-24">
+                            <button class="btn btn-primary" type="submit"
+                                th:text="${paciente.id == null ? 'Crear Paciente' : 'Guardar Modificación'}">
+                                Crear Paciente
+                            </button>
+                            <a class="btn btn-ghost" th:href="@{/pacientes}">Cancelar</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </main>
+
+        <footer th:replace="~{fragments/layout :: footer}"></footer>
+    </div>
+
+    <div th:replace="~{fragments/layout :: scripts}"></div>
+
+</body>
+</html>

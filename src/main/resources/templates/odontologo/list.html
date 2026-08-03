@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head th:replace="~{fragments/layout :: head('Ver Odontólogos')}"></head>
+
+<body class="app">
+
+    <aside th:replace="~{fragments/layout :: sidebar}"></aside>
+
+    <div class="app-main">
+        <header th:replace="~{fragments/layout :: topbar}"></header>
+
+        <main class="app-content">
+            <h1 class="page-title">Ver Odontólogos</h1>
+            <p class="page-subtitle">A continuación podrá visualizar la lista completa de odontólogos.</p>
+
+            <div th:if="${error}" class="alert alert-error" role="alert">
+                <i class="fas fa-exclamation-circle"></i>
+                <span th:text="${error}">Error</span>
+                <button class="alert-close" type="button" aria-label="Cerrar">&times;</button>
+            </div>
+
+            <div class="panel">
+                <div class="panel-header">
+                    <h2 class="panel-title">Odontólogos</h2>
+                    <a class="btn btn-primary" th:href="@{/odontologos/nuevo}">
+                        <i class="fas fa-plus"></i>
+                        Nuevo Odontólogo
+                    </a>
+                </div>
+                <div class="panel-body">
+                    <form class="toolbar" th:action="@{/odontologos}" method="get">
+                        <input class="input" type="text" name="busqueda" th:value="${busqueda}"
+                            placeholder="Buscar por nombre o apellido">
+                        <button class="btn btn-ghost" type="submit">
+                            <i class="fas fa-search"></i>
+                            Buscar
+                        </button>
+                    </form>
+
+                    <div class="table-wrap">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Id</th>
+                                    <th>DNI</th>
+                                    <th>Nombre</th>
+                                    <th>Apellido</th>
+                                    <th>Teléfono</th>
+                                    <th>Especialidad</th>
+                                    <th class="text-right">Acción</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="odontologo : ${odontologos}">
+                                    <td th:text="${odontologo.id}">1</td>
+                                    <td th:text="${odontologo.dni}">DNI</td>
+                                    <td th:text="${odontologo.nombre}">Nombre</td>
+                                    <td th:text="${odontologo.apellido}">Apellido</td>
+                                    <td th:text="${odontologo.telefono}">Teléfono</td>
+                                    <td>
+                                        <span class="badge badge-green" th:text="${odontologo.especialidad}">Especialidad</span>
+                                    </td>
+                                    <td>
+                                        <div class="actions text-right">
+                                            <a class="btn-icon btn-icon-edit"
+                                                th:href="@{/odontologos/editar/{id}(id=${odontologo.id})}"
+                                                title="Editar">
+                                                <i class="fas fa-pen"></i>
+                                            </a>
+                                            <form class="inline-form"
+                                                th:action="@{/odontologos/eliminar/{id}(id=${odontologo.id})}"
+                                                method="post"
+                                                onsubmit="return confirm('¿Eliminar al odontólogo?');">
+                                                <button class="btn-icon btn-icon-delete" type="submit"
+                                                    title="Eliminar">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr th:if="${#lists.isEmpty(odontologos)}" class="empty-row">
+                                    <td colspan="7">No hay odontólogos registrados.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer th:replace="~{fragments/layout :: footer}"></footer>
+    </div>
+
+    <div th:replace="~{fragments/layout :: scripts}"></div>
+
+</body>
+</html>

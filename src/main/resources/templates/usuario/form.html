@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head th:replace="~{fragments/layout :: head('Usuarios')}"></head>
+
+<body class="app">
+
+    <aside th:replace="~{fragments/layout :: sidebar}"></aside>
+
+    <div class="app-main">
+        <header th:replace="~{fragments/layout :: topbar}"></header>
+
+        <main class="app-content">
+            <h1 class="page-title" th:text="${usuario.id == null ? 'Alta Usuarios' : 'Edición de Usuario'}">
+                Alta Usuarios</h1>
+            <p class="page-subtitle">Complete los datos del usuario del sistema.</p>
+
+            <div class="panel">
+                <div class="panel-body">
+                    <form th:object="${usuario}"
+                        th:action="${usuario.id == null} ? @{/usuarios/nuevo} : @{/usuarios/editar/{id}(id=${usuario.id})}"
+                        method="post">
+                        <div class="form-grid">
+                            <div class="field">
+                                <label class="field-label" for="nombreUsuario">Nombre de usuario</label>
+                                <input class="input" type="text" id="nombreUsuario" name="nombreUsuario"
+                                    th:value="*{nombreUsuario}" placeholder="Nombre de usuario" required>
+                            </div>
+                            <div class="field">
+                                <label class="field-label" for="contrasenia">Contraseña</label>
+                                <input class="input" type="password" id="contrasenia" name="contrasenia"
+                                    placeholder="Contraseña" required>
+                                <small class="field-hint"
+                                    th:if="${usuario.id != null}">Deje vacío para conservar la contraseña actual.</small>
+                            </div>
+                            <div class="field">
+                                <label class="field-label" for="rol">Rol</label>
+                                <input class="input" type="text" id="rol" name="rol"
+                                    th:value="*{rol}" placeholder="Ej: ADMIN, SECRETARIO" required>
+                            </div>
+                        </div>
+
+                        <div class="actions mt-24">
+                            <button class="btn btn-primary" type="submit"
+                                th:text="${usuario.id == null ? 'Crear Usuario' : 'Guardar Modificación'}">
+                                Crear Usuario
+                            </button>
+                            <a class="btn btn-ghost" th:href="@{/usuarios}">Cancelar</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </main>
+
+        <footer th:replace="~{fragments/layout :: footer}"></footer>
+    </div>
+
+    <div th:replace="~{fragments/layout :: scripts}"></div>
+
+</body>
+</html>

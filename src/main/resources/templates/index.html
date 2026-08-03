@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head th:replace="~{fragments/layout :: head('Inicio')}"></head>
+
+<body class="app">
+
+    <aside th:replace="~{fragments/layout :: sidebar}"></aside>
+
+    <div class="app-main">
+        <header th:replace="~{fragments/layout :: topbar}"></header>
+
+        <main class="app-content">
+            <h1 class="page-title">Sistema de Administración de Turnos</h1>
+            <p class="page-subtitle">Clínica Odontológica</p>
+
+            <div class="stat-grid">
+                <a class="stat-card stat-card--primary" th:href="@{/pacientes}">
+                    <i class="fas fa-hospital-user stat-card-icon"></i>
+                    <h2 class="stat-card-label">Pacientes</h2>
+                    <p class="stat-card-text">Gestionar pacientes</p>
+                </a>
+
+                <a class="stat-card stat-card--success" th:href="@{/odontologos}">
+                    <i class="fas fa-notes-medical stat-card-icon"></i>
+                    <h2 class="stat-card-label">Odontólogos</h2>
+                    <p class="stat-card-text">Gestionar odontólogos</p>
+                </a>
+
+                <a class="stat-card stat-card--info" th:href="@{/turnos}">
+                    <i class="fas fa-calendar-check stat-card-icon"></i>
+                    <h2 class="stat-card-label">Turnos</h2>
+                    <p class="stat-card-text">Gestionar turnos</p>
+                </a>
+
+                <a class="stat-card stat-card--warning" th:href="@{/usuarios}">
+                    <i class="fas fa-user-cog stat-card-icon"></i>
+                    <h2 class="stat-card-label">Usuarios</h2>
+                    <p class="stat-card-text">Gestionar usuarios</p>
+                </a>
+            </div>
+        </main>
+
+        <footer th:replace="~{fragments/layout :: footer}"></footer>
+    </div>
+
+    <div th:replace="~{fragments/layout :: scripts}"></div>
+
+</body>
+</html>

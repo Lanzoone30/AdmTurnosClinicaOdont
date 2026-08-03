@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head th:replace="~{fragments/layout :: head('Ver Usuarios')}"></head>
+
+<body class="app">
+
+    <aside th:replace="~{fragments/layout :: sidebar}"></aside>
+
+    <div class="app-main">
+        <header th:replace="~{fragments/layout :: topbar}"></header>
+
+        <main class="app-content">
+            <h1 class="page-title">Ver Usuarios</h1>
+            <p class="page-subtitle">A continuación podrá visualizar la lista completa de usuarios.</p>
+
+            <div th:if="${error}" class="alert alert-error" role="alert">
+                <i class="fas fa-exclamation-circle"></i>
+                <span th:text="${error}">Error</span>
+                <button class="alert-close" type="button" aria-label="Cerrar">&times;</button>
+            </div>
+
+            <div class="panel">
+                <div class="panel-header">
+                    <h2 class="panel-title">Usuarios</h2>
+                    <a class="btn btn-primary" th:href="@{/usuarios/nuevo}">
+                        <i class="fas fa-plus"></i>
+                        Nuevo Usuario
+                    </a>
+                </div>
+                <div class="panel-body">
+                    <div class="table-wrap">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Id</th>
+                                    <th>Nombre</th>
+                                    <th>Rol</th>
+                                    <th class="text-right">Acción</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="usuario : ${usuarios}">
+                                    <td th:text="${usuario.id}">1</td>
+                                    <td th:text="${usuario.nombreUsuario}">Nombre</td>
+                                    <td>
+                                        <span class="badge badge-amber" th:text="${usuario.rol}">Rol</span>
+                                    </td>
+                                    <td>
+                                        <div class="actions text-right">
+                                            <a class="btn-icon btn-icon-edit"
+                                                th:href="@{/usuarios/editar/{id}(id=${usuario.id})}"
+                                                title="Editar">
+                                                <i class="fas fa-pen"></i>
+                                            </a>
+                                            <form class="inline-form"
+                                                th:action="@{/usuarios/eliminar/{id}(id=${usuario.id})}"
+                                                method="post"
+                                                onsubmit="return confirm('¿Eliminar al usuario?');">
+                                                <button class="btn-icon btn-icon-delete" type="submit"
+                                                    title="Eliminar">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr th:if="${#lists.isEmpty(usuarios)}" class="empty-row">
+                                    <td colspan="4">No hay usuarios registrados.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer th:replace="~{fragments/layout :: footer}"></footer>
+    </div>
+
+    <div th:replace="~{fragments/layout :: scripts}"></div>
+
+</body>
+</html>
