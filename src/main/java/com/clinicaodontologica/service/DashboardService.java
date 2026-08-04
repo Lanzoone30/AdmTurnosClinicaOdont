@@ -1,5 +1,6 @@
 package com.clinicaodontologica.service;
 
+import com.clinicaodontologica.model.EstadoTurno;
 import com.clinicaodontologica.model.Paciente;
 import com.clinicaodontologica.model.Turno;
 import com.clinicaodontologica.repository.OdontologoRepository;
@@ -36,6 +37,15 @@ public class DashboardService {
         private final long turnosHoy;
         private final List<Turno> proximosTurnos;
         private final List<Paciente> ultimosPacientes;
+        // Resumen ejecutivo
+        private final long turnosPendientes;
+        private final long turnosConfirmados;
+        private final long turnosRealizados;
+        private final long turnosCancelados;
+        private final long turnosSemanaActual;
+        private final long turnosSemanaPasada;
+        private final long pacientesNuevosMes;
+        private final TurnoRepository.OdontologoConteo odontologoTop;
     }
 
     /**
@@ -45,14 +55,30 @@ public class DashboardService {
      */
     @Transactional(readOnly = true)
     public DashboardData obtenerDashboard() {
+        LocalDate hoy = LocalDate.now();
+        LocalDate inicioSemana = hoy.minusDays(hoy.getDayOfWeek().getValue() - 1L);
+        LocalDate inicioSemanaPasada = inicioSemana.minusDays(7);
+        LocalDate inicioMes = hoy.withDayOfMonth(1);
+
+        List<TurnoRepository.OdontologoConteo> ranking = turnoRepository.contarTurnosPorOdontologo();
+
         return new DashboardData(
                 pacienteRepository.count(),
                 odontologoRepository.count(),
                 turnoRepository.count(),
                 usuarioRepository.count(),
-                turnoRepository.countByFechaTurno(LocalDate.now()),
+                turnoRepository.countByFechaTurno(hoy),
                 turnoRepository.findTop5ByOrderByFechaTurnoDescHoraTurnoDesc(),
-                pacienteRepository.findTop5ByOrderByIdDesc()
+                pacienteRepository.findTop5ByOrderByIdDesc(),
+                // Resumen ejecutivo
+                turnoRepository.countByEstado(EstadoTurno.PENDIENTE),
+                turnoRepository.countByEstado(EstadoTurno.CONFIRMADO),
+                turnoRepository.countByEstado(EstadoTurno.REALIZADO),
+                turnoRepository.countByEstado(EstadoTurno.CANCELADO),
+                turnoRepository.countByFechaTurnoBetween(inicioSemana, hoy),
+                turnoRepository.countByFechaTurnoBetween(inicioSemanaPasada, inicioSemana.minusDays(1)),
+                pacienteRepository.countByFechaAltaBetween(inicioMes, hoy),
+                ranking.isEmpty() ? null : ranking.get(0)
         );
     }
 }

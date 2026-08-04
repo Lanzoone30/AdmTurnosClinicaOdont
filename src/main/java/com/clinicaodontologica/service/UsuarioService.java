@@ -57,6 +57,40 @@ public class UsuarioService {
     }
 
     /**
+     * Busca un usuario por su nombre de usuario.
+     *
+     * @param nombreUsuario nombre de usuario
+     * @return el usuario, o {@code null} si no existe
+     */
+    @Transactional(readOnly = true)
+    public Usuario obtenerPorNombre(String nombreUsuario) {
+        return usuarioRepository.findByNombreUsuario(nombreUsuario).orElse(null);
+    }
+
+    /**
+     * Cambia la contrasenia de un usuario validando la contrasenia actual.
+     *
+     * @param nombreUsuario nombre de usuario
+     * @param contraseniaActual contrasenia actual en texto plano
+     * @param contraseniaNueva nueva contrasenia en texto plano
+     * @throws IllegalArgumentException si la contrasenia actual no coincide
+     */
+    @Transactional
+    public void cambiarContrasenia(String nombreUsuario, String contraseniaActual,
+                                   String contraseniaNueva) {
+        Usuario usuario = usuarioRepository.findByNombreUsuario(nombreUsuario)
+                .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado: " + nombreUsuario));
+        if (!passwordEncoder.matches(contraseniaActual, usuario.getContrasenia())) {
+            throw new IllegalArgumentException("La contrasenia actual no es correcta");
+        }
+        if (contraseniaNueva == null || contraseniaNueva.isBlank()) {
+            throw new IllegalArgumentException("La nueva contrasenia no puede estar vacia");
+        }
+        usuario.setContrasenia(passwordEncoder.encode(contraseniaNueva));
+        usuarioRepository.save(usuario);
+    }
+
+    /**
      * Actualiza los datos de un usuario. Si llega una contrasenia nueva
      * (no vacia) la re-hashea; si llega vacia conserva la anterior.
      *

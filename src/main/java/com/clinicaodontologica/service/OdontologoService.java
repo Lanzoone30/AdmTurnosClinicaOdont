@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -65,6 +66,7 @@ public class OdontologoService {
     @Transactional
     public Odontologo crear(Odontologo odontologo) {
         odontologo.setId(null);
+        odontologo.setFechaAlta(LocalDate.now());
         return odontologoRepository.save(odontologo);
     }
 

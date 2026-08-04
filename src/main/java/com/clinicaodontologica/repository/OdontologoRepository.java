@@ -4,6 +4,7 @@ import com.clinicaodontologica.model.Odontologo;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Repositorio de acceso a datos para {@link Odontologo}.
@@ -20,4 +21,12 @@ public interface OdontologoRepository extends JpaRepository<Odontologo, Integer>
      */
     List<Odontologo> findByNombreContainingIgnoreCaseOrApellidoContainingIgnoreCase(
             String nombre, String apellido);
+
+    /**
+     * Busca un odontologo por su nombre de usuario.
+     *
+     * @param nombreUsuario nombre de usuario del odontologo
+     * @return el odontologo asociado, o vacio si no existe
+     */
+    Optional<Odontologo> findByUsuarioNombreUsuario(String nombreUsuario);
 }
