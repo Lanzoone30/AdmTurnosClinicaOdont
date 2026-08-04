@@ -12,6 +12,9 @@ import org.springframework.security.web.SecurityFilterChain;
  * Configuracion de seguridad: acceso publico a login y assets estaticos,
  * el resto de rutas requiere autenticacion. Las contrasenias se hashean
  * con BCrypt.
+ *
+ * <p>Roles: ADMIN puede todo; ODONTOLOGO ve turnos/pacientes; SECRETARIO
+ * ve pacientes/odontologos/turnos.</p>
  */
 @Configuration
 @EnableWebSecurity
@@ -30,6 +33,10 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/login", "/css/**", "/js/**", "/img/**", "/vendor/**", "/scss/**")
                     .permitAll()
+                .requestMatchers("/usuarios/**").hasRole("ADMIN")
+                .requestMatchers("/pacientes/**").hasAnyRole("ADMIN", "ODONTOLOGO", "SECRETARIO")
+                .requestMatchers("/odontologos/**").hasAnyRole("ADMIN", "SECRETARIO")
+                .requestMatchers("/turnos/**").hasAnyRole("ADMIN", "ODONTOLOGO", "SECRETARIO")
                 .anyRequest().authenticated())
             .formLogin(form -> form
                 .loginPage("/login")
@@ -40,6 +47,7 @@ public class SecurityConfig {
                 .logoutSuccessUrl("/login")
                 .permitAll());
         return http.build();
+
     }
 
     /**

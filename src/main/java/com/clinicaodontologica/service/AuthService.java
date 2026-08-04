@@ -37,6 +37,6 @@ public class AuthService implements UserDetailsService {
         return new User(
                 usuario.getNombreUsuario(),
                 usuario.getContrasenia(),
-                List.of(new SimpleGrantedAuthority("ROLE_" + usuario.getRol())));
+                List.of(new SimpleGrantedAuthority("ROLE_" + usuario.getRol().name())));
     }
 }

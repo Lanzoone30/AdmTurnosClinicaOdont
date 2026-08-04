@@ -1,5 +1,6 @@
 package com.clinicaodontologica.config;
 
+import com.clinicaodontologica.model.Rol;
 import com.clinicaodontologica.model.Usuario;
 import com.clinicaodontologica.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
@@ -31,7 +32,7 @@ public class DataInitializer implements CommandLineRunner {
             Usuario admin = new Usuario();
             admin.setNombreUsuario("admin");
             admin.setContrasenia(passwordEncoder.encode("admin"));
-            admin.setRol("ADMIN");
+            admin.setRol(Rol.ADMIN);
             usuarioRepository.save(admin);
             log.info("Usuario por defecto creado: admin / admin (cambielo en produccion)");
         }

@@ -1,5 +1,6 @@
 package com.clinicaodontologica.controller;
 
+import com.clinicaodontologica.model.Rol;
 import com.clinicaodontologica.model.Usuario;
 import com.clinicaodontologica.service.UsuarioService;
 import lombok.RequiredArgsConstructor;
@@ -10,7 +11,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**
@@ -44,6 +44,7 @@ public class UsuarioController {
     @GetMapping("/nuevo")
     public String formulario(Model model) {
         model.addAttribute("usuario", new Usuario());
+        model.addAttribute("roles", Rol.values());
         return "usuario/form";
     }
 
@@ -69,6 +70,7 @@ public class UsuarioController {
     @GetMapping("/editar/{id}")
     public String editar(@PathVariable Integer id, Model model) {
         model.addAttribute("usuario", usuarioService.obtener(id));
+        model.addAttribute("roles", Rol.values());
         return "usuario/form";
     }
 
