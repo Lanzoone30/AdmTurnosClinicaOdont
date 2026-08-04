@@ -61,6 +61,16 @@
                                     </option>
                                 </select>
                             </div>
+                            <div class="field">
+                                <label class="field-label" for="estado">Estado</label>
+                                <select class="select" id="estado" name="estado">
+                                    <option th:each="e : ${estados}" th:value="${e.name()}"
+                                        th:text="${e.name()}"
+                                        th:selected="${turno != null && turno.estado != null && turno.estado.name() == e.name()}">
+                                        Estado
+                                    </option>
+                                </select>
+                            </div>
                         </div>
 
                         <div class="actions mt-24">

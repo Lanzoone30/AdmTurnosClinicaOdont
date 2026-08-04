@@ -27,14 +27,30 @@
     <ul class="sidebar-nav">
         <li class="nav-item">
             <a class="nav-link" th:href="@{/}">
-                <i class="fas fa-bars"></i>
-                <span>Menú</span>
+                <i class="fas fa-tachometer-alt"></i>
+                <span>Dashboard</span>
             </a>
         </li>
 
-        <div class="nav-section">Gestión</div>
+        <!-- Portal del paciente -->
+        <li class="nav-item" th:if="${rolUsuario == 'PACIENTE'}">
+            <a class="nav-link" th:href="@{/turnos/mis-turnos}">
+                <i class="fas fa-calendar-check"></i>
+                <span>Mis Turnos</span>
+            </a>
+        </li>
 
-        <li class="nav-item">
+        <!-- Agenda del odontologo -->
+        <li class="nav-item" th:if="${rolUsuario == 'ODONTOLOGO'}">
+            <a class="nav-link" th:href="@{/turnos/mi-agenda}">
+                <i class="fas fa-calendar-alt"></i>
+                <span>Mi Agenda</span>
+            </a>
+        </li>
+
+        <div class="nav-section" th:unless="${rolUsuario == 'PACIENTE'}">Gestión</div>
+
+        <li class="nav-item" th:if="${rolUsuario == 'ADMIN' or rolUsuario == 'SECRETARIO'}">
             <a class="nav-link" href="#" data-collapse>
                 <i class="fas fa-notes-medical"></i>
                 <span>Odontólogos</span>
@@ -46,7 +62,7 @@
             </div>
         </li>
 
-        <li class="nav-item">
+        <li class="nav-item" th:if="${rolUsuario != 'PACIENTE'}">
             <a class="nav-link" href="#" data-collapse>
                 <i class="fas fa-hospital-user"></i>
                 <span>Pacientes</span>
@@ -58,7 +74,7 @@
             </div>
         </li>
 
-        <li class="nav-item">
+        <li class="nav-item" th:if="${rolUsuario != 'PACIENTE'}">
             <a class="nav-link" href="#" data-collapse>
                 <i class="fas fa-calendar-check"></i>
                 <span>Turnos</span>
@@ -70,7 +86,7 @@
             </div>
         </li>
 
-        <li class="nav-item">
+        <li class="nav-item" th:if="${rolUsuario == 'ADMIN'}">
             <a class="nav-link" href="#" data-collapse>
                 <i class="fas fa-user-cog"></i>
                 <span>Usuarios</span>
@@ -80,6 +96,22 @@
                 <a class="nav-sub-link" th:href="@{/usuarios}">Ver Usuarios</a>
                 <a class="nav-sub-link" th:href="@{/usuarios/nuevo}">Alta Usuarios</a>
             </div>
+        </li>
+
+        <li class="nav-item" th:if="${rolUsuario == 'ADMIN'}">
+            <a class="nav-link" th:href="@{/auditoria}">
+                <i class="fas fa-history"></i>
+                <span>Auditoría</span>
+            </a>
+        </li>
+
+        <div class="nav-section">Cuenta</div>
+
+        <li class="nav-item">
+            <a class="nav-link" th:href="@{/mi-perfil}">
+                <i class="fas fa-user-circle"></i>
+                <span>Mi Perfil</span>
+            </a>
         </li>
     </ul>
 </aside>

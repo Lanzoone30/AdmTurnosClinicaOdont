@@ -79,11 +79,11 @@
                                         </div>
                                     </td>
                                 </tr>
-                                <tr th:if="${#lists.isEmpty(odontologos)}" class="empty-row">
-                                    <td colspan="7">No hay odontólogos registrados.</td>
-                                </tr>
                             </tbody>
                         </table>
+                    </div>
+                    <div th:if="${odontologos.isEmpty()}" class="empty-state">
+                        <p>No hay odontólogos registrados.</p>
                     </div>
                 </div>
             </div>

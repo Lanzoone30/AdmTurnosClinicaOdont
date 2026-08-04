@@ -46,6 +46,7 @@
                                     <th>Nombre</th>
                                     <th>Apellido</th>
                                     <th>Teléfono</th>
+                                    <th>Obra Social</th>
                                     <th class="text-right">Acción</th>
                                 </tr>
                             </thead>
@@ -56,6 +57,11 @@
                                     <td th:text="${paciente.nombre}">Nombre</td>
                                     <td th:text="${paciente.apellido}">Apellido</td>
                                     <td th:text="${paciente.telefono}">Teléfono</td>
+                                    <td>
+                                        <span th:if="${paciente.tieneOS}"
+                                            th:text="${paciente.nombreOS}">Obra Social</span>
+                                        <span th:unless="${paciente.tieneOS}" class="text-muted">—</span>
+                                    </td>
                                     <td>
                                         <div class="actions text-right">
                                             <a class="btn-icon btn-icon-edit"

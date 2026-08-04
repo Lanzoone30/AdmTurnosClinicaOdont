@@ -50,6 +50,33 @@
                                 <input class="input" type="date" id="fechaNac" name="fechaNac"
                                     th:value="*{fechaNac}">
                             </div>
+                            <div class="field">
+                                <label class="field-label" for="tipoSangre">Tipo de sangre</label>
+                                <input class="input" type="text" id="tipoSangre" name="tipoSangre"
+                                    th:value="*{tipoSangre}" placeholder="Ej: A+">
+                            </div>
+                        </div>
+
+                        <div class="nav-section">Obra social</div>
+
+                        <div class="form-grid">
+                            <div class="field">
+                                <label class="field-label" for="tieneOS">¿Tiene obra social?</label>
+                                <select class="input" id="tieneOS" name="tieneOS">
+                                    <option value="false" th:selected="${paciente != null and !paciente.tieneOS}">No</option>
+                                    <option value="true" th:selected="${paciente != null and paciente.tieneOS}">Sí</option>
+                                </select>
+                            </div>
+                            <div class="field">
+                                <label class="field-label" for="nombreOS">Nombre de la obra social</label>
+                                <input class="input" type="text" id="nombreOS" name="nombreOS"
+                                    th:value="*{nombreOS}" placeholder="Ej: OSDE, IOMA">
+                            </div>
+                            <div class="field">
+                                <label class="field-label" for="numeroAfiliado">Número de afiliado</label>
+                                <input class="input" type="text" id="numeroAfiliado" name="numeroAfiliado"
+                                    th:value="*{numeroAfiliado}" placeholder="Número de afiliado">
+                            </div>
                         </div>
 
                         <div class="actions mt-24">

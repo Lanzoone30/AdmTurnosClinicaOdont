@@ -45,17 +45,83 @@
             </div>
 
             <!-- Turnos de hoy -->
-            <div class="stat-grid" style="margin-top:20px">
+            <div class="stat-grid mt-24">
                 <a class="stat-card stat-card--danger" th:href="@{/turnos}">
                     <i class="fas fa-clock stat-card-icon"></i>
                     <h2 class="stat-card-label">Turnos de Hoy</h2>
                     <p class="stat-card-value" th:text="${dashboard.turnosHoy}">0</p>
                     <p class="stat-card-text"><span th:text="${#temporals.format(#temporals.createToday(), 'dd/MM/yyyy')}">hoy</span></p>
                 </a>
+
+                <a class="stat-card stat-card--warning" th:href="@{/turnos}">
+                    <i class="fas fa-hourglass-half stat-card-icon"></i>
+                    <h2 class="stat-card-label">Pendientes</h2>
+                    <p class="stat-card-value" th:text="${dashboard.turnosPendientes}">0</p>
+                    <p class="stat-card-text">Sin confirmar</p>
+                </a>
+
+                <a class="stat-card stat-card--success" th:href="@{/turnos}">
+                    <i class="fas fa-check-circle stat-card-icon"></i>
+                    <h2 class="stat-card-label">Confirmados</h2>
+                    <p class="stat-card-value" th:text="${dashboard.turnosConfirmados}">0</p>
+                    <p class="stat-card-text">A confirmados</p>
+                </a>
+
+                <a class="stat-card stat-card--info" th:href="@{/pacientes}">
+                    <i class="fas fa-user-plus stat-card-icon"></i>
+                    <h2 class="stat-card-label">Pacientes del Mes</h2>
+                    <p class="stat-card-value" th:text="${dashboard.pacientesNuevosMes}">0</p>
+                    <p class="stat-card-text">Altas este mes</p>
+                </a>
+            </div>
+
+            <!-- Resumen ejecutivo -->
+            <div class="dashboard-grid">
+                <div class="panel">
+                    <div class="panel-header">
+                        <h2 class="panel-title">Rendimiento de turnos</h2>
+                    </div>
+                    <div class="panel-body">
+                        <p>
+                            <strong>Semana actual:</strong>
+                            <span th:text="${dashboard.turnosSemanaActual}">0</span> turnos
+                            (semana pasada: <span th:text="${dashboard.turnosSemanaPasada}">0</span>)
+                        </p>
+                        <p>
+                            <strong>Realizados:</strong>
+                            <span th:text="${dashboard.turnosRealizados}">0</span>
+                        </p>
+                        <p>
+                            <strong>Cancelados:</strong>
+                            <span th:text="${dashboard.turnosCancelados}">0</span>
+                        </p>
+                        <p th:if="${dashboard.odontologoTop != null}">
+                            <strong>Odontólogo con más turnos:</strong>
+                            <span th:text="${dashboard.odontologoTop.nombre + ' ' + dashboard.odontologoTop.apellido + ' (' + dashboard.odontologoTop.total + ')'}">top</span>
+                        </p>
+                        <p th:if="${dashboard.odontologoTop == null}" class="text-muted">
+                            Aún no hay turnos para calcular ranking.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <div class="panel-header">
+                        <h2 class="panel-title">Turnos por estado</h2>
+                    </div>
+                    <div class="panel-body">
+                        <ul class="list-stats">
+                            <li><span class="badge badge-pendiente">PENDIENTE</span> <span th:text="${dashboard.turnosPendientes}">0</span></li>
+                            <li><span class="badge badge-success">CONFIRMADO</span> <span th:text="${dashboard.turnosConfirmados}">0</span></li>
+                            <li><span class="badge badge-realizado">REALIZADO</span> <span th:text="${dashboard.turnosRealizados}">0</span></li>
+                            <li><span class="badge badge-cancelado">CANCELADO</span> <span th:text="${dashboard.turnosCancelados}">0</span></li>
+                        </ul>
+                    </div>
+                </div>
             </div>
 
             <!-- Tablas de detalle -->
-            <div class="dashboard-grid">
+            <div class="dashboard-grid mt-24">
                 <!-- Proximos turnos -->
                 <div class="panel">
                     <div class="panel-header">

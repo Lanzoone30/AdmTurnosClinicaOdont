@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head th:replace="~{fragments/layout :: head('Mi Perfil')}"></head>
+
+<body class="app">
+
+    <aside th:replace="~{fragments/layout :: sidebar}"></aside>
+
+    <div class="app-main">
+        <header th:replace="~{fragments/layout :: topbar}"></header>
+
+        <main class="app-content">
+            <h1 class="page-title">Mi Perfil</h1>
+            <p class="page-subtitle">Datos de su cuenta de usuario.</p>
+
+            <div th:if="${exito}" class="alert alert-success" role="alert">
+                <i class="fas fa-check-circle"></i>
+                <span th:text="${exito}">Exito</span>
+                <button class="alert-close" type="button" aria-label="Cerrar">&times;</button>
+            </div>
+            <div th:if="${error}" class="alert alert-error" role="alert">
+                <i class="fas fa-exclamation-circle"></i>
+                <span th:text="${error}">Error</span>
+                <button class="alert-close" type="button" aria-label="Cerrar">&times;</button>
+            </div>
+
+            <div class="dashboard-grid">
+                <div class="panel">
+                    <div class="panel-header">
+                        <h2 class="panel-title">Datos de la cuenta</h2>
+                    </div>
+                    <div class="panel-body">
+                        <p><strong>Usuario:</strong> <span th:text="${usuario.nombreUsuario}">usuario</span></p>
+                        <p><strong>Rol:</strong>
+                            <span class="badge" th:classappend="'badge-' + ${#strings.toLowerCase(usuario.rol.name())}"
+                                th:text="${usuario.rol.name()}">rol</span>
+                        </p>
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <div class="panel-header">
+                        <h2 class="panel-title">Cambiar contraseña</h2>
+                    </div>
+                    <div class="panel-body">
+                        <form th:action="@{/mi-perfil/cambiar-contrasena}" method="post">
+                            <div class="form-grid">
+                                <div class="field">
+                                    <label class="field-label" for="contraseniaActual">Contraseña actual</label>
+                                    <input class="input" type="password" id="contraseniaActual"
+                                        name="contraseniaActual" placeholder="Contraseña actual" required>
+                                </div>
+                                <div class="field">
+                                    <label class="field-label" for="contraseniaNueva">Nueva contraseña</label>
+                                    <input class="input" type="password" id="contraseniaNueva"
+                                        name="contraseniaNueva" placeholder="Nueva contraseña" required>
+                                </div>
+                            </div>
+                            <div class="actions mt-24">
+                                <button class="btn btn-primary" type="submit">Cambiar contraseña</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script th:src="@{/js/app.js}"></script>
+</body>
+</html>

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head th:replace="~{fragments/layout :: head('Auditoría')}"></head>
+
+<body class="app">
+
+    <aside th:replace="~{fragments/layout :: sidebar}"></aside>
+
+    <div class="app-main">
+        <header th:replace="~{fragments/layout :: topbar}"></header>
+
+        <main class="app-content">
+            <h1 class="page-title">Auditoría</h1>
+            <p class="page-subtitle">Registro de operaciones realizadas en el sistema.</p>
+
+            <div class="panel">
+                <div class="panel-body">
+                    <div th:if="${registros.isEmpty()}" class="empty-state">
+                        <p>No hay registros de auditoría todavía.</p>
+                    </div>
+                    <div class="table-wrap" th:unless="${registros.isEmpty()}">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Fecha</th>
+                                    <th>Usuario</th>
+                                    <th>Entidad</th>
+                                    <th>Acción</th>
+                                    <th>Detalle</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="registro : ${registros}">
+                                    <td th:text="${#temporals.format(registro.fecha, 'dd/MM/yyyy HH:mm')}">fecha</td>
+                                    <td th:text="${registro.usuario}">usuario</td>
+                                    <td th:text="${registro.entidad}">entidad</td>
+                                    <td>
+                                        <span class="badge"
+                                            th:classappend="${registro.accion.name() == 'ELIMINAR'} ? 'badge-danger' : (${registro.accion.name() == 'CREAR'} ? 'badge-success' : 'badge-info')"
+                                            th:text="${registro.accion.name()}">accion</span>
+                                    </td>
+                                    <td th:text="${registro.detalle}">detalle</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script th:src="@{/js/app.js}"></script>
+</body>
+</html>

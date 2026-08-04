@@ -65,11 +65,11 @@
                                         </div>
                                     </td>
                                 </tr>
-                                <tr th:if="${#lists.isEmpty(usuarios)}" class="empty-row">
-                                    <td colspan="4">No hay usuarios registrados.</td>
-                                </tr>
                             </tbody>
                         </table>
+                    </div>
+                    <div th:if="${usuarios.isEmpty()}" class="empty-state">
+                        <p>No hay usuarios registrados.</p>
                     </div>
                 </div>
             </div>

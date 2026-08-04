@@ -811,6 +811,52 @@ a:hover {
   color: var(--text);
 }
 
+.badge-danger {
+  background: rgba(231, 74, 59, 0.12);
+  color: #c03024;
+}
+
+.badge-info {
+  background: rgba(54, 185, 204, 0.14);
+  color: #1d7d8c;
+}
+
+/* Badges por estado de turno */
+.badge-pendiente {
+  background: rgba(246, 194, 62, 0.2);
+  color: #966a00;
+}
+
+.badge-cancelado {
+  background: rgba(231, 74, 59, 0.12);
+  color: #c03024;
+}
+
+.badge-realizado {
+  background: rgba(54, 185, 204, 0.14);
+  color: #1d7d8c;
+}
+
+/* ==========================================================================
+   Barra de filtros
+   ========================================================================== */
+
+.filters {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
+  gap: 14px;
+  align-items: end;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 16px;
+}
+
+@media (max-width: 768px) {
+  .filters {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* ==========================================================================
    Table compacta (dashboard)
    ========================================================================== */
@@ -838,6 +884,27 @@ a:hover {
 
 .empty-state p {
   margin: 0;
+}
+
+/* ==========================================================================
+   Lista de estadisticas (dashboard)
+   ========================================================================== */
+
+.list-stats {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 12px;
+}
+
+.list-stats li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
 }
 
 /* ==========================================================================

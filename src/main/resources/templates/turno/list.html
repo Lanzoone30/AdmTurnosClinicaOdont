@@ -28,7 +28,31 @@
                     </a>
                 </div>
                 <div class="panel-body">
-                    <div class="table-wrap">
+                    <form class="filters" th:action="@{/turnos}" method="get">
+                        <div class="field">
+                            <label class="field-label" for="afeccion">Buscar por afección</label>
+                            <input class="input" type="text" id="afeccion" name="afeccion"
+                                th:value="${afeccionFiltro}" placeholder="Ej: Dolor de muelas">
+                        </div>
+                        <div class="field">
+                            <label class="field-label" for="estado">Estado</label>
+                            <select class="input" id="estado" name="estado">
+                                <option value="">Todos</option>
+                                <option th:each="e : ${estados}" th:value="${e.name()}"
+                                    th:text="${e.name()}"
+                                    th:selected="${estadoFiltro != null and estadoFiltro.name() == e.name()}"></option>
+                            </select>
+                        </div>
+                        <div class="field">
+                            <button class="btn btn-primary" type="submit">
+                                <i class="fas fa-search"></i> Filtrar
+                            </button>
+                        </div>
+                    </form>
+                    <div th:if="${turnos.isEmpty()}" class="empty-state">
+                        <p>No hay turnos que coincidan con los filtros.</p>
+                    </div>
+                    <div class="table-wrap" th:unless="${turnos.isEmpty()}">
                         <table class="table">
                             <thead>
                                 <tr>
@@ -37,6 +61,7 @@
                                     <th>Hora</th>
                                     <th>Doctor</th>
                                     <th>Paciente</th>
+                                    <th>Estado</th>
                                     <th class="text-right">Acción</th>
                                 </tr>
                             </thead>
@@ -47,6 +72,10 @@
                                     <td th:text="${#temporals.format(turno.horaTurno, 'HH:mm')}">Hora</td>
                                     <td th:text="${turno.odontologo != null ? turno.odontologo.nombre + ' ' + turno.odontologo.apellido : ''}">Doctor</td>
                                     <td th:text="${turno.paciente != null ? turno.paciente.nombre + ' ' + turno.paciente.apellido : ''}">Paciente</td>
+                                    <td>
+                                        <span class="badge" th:classappend="'badge-' + ${#strings.toLowerCase(turno.estado.name())}"
+                                            th:text="${turno.estado.name()}">estado</span>
+                                    </td>
                                     <td>
                                         <div class="actions text-right">
                                             <a class="btn-icon btn-icon-edit"
@@ -65,9 +94,6 @@
                                             </form>
                                         </div>
                                     </td>
-                                </tr>
-                                <tr th:if="${#lists.isEmpty(turnos)}" class="empty-row">
-                                    <td colspan="6">No hay turnos registrados.</td>
                                 </tr>
                             </tbody>
                         </table>
