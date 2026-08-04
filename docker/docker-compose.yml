@@ -1,0 +1,43 @@
+# =============================================================================
+# docker-compose.yml - ClinicaOdontologica (Spring Boot + MySQL)
+# =============================================================================
+# Uso:  docker compose -f docker/docker-compose.yml up -d
+#       docker compose -f docker/docker-compose.yml down
+# =============================================================================
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: clinica-mysql
+    restart: unless-stopped
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+      MYSQL_DATABASE: clinica_odontologica
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ../bd/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql
+      - ../bd/seed.sql:/docker-entrypoint-initdb.d/02-seed.sql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  app:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: clinica-app
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/clinica_odontologica
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+volumes:
+  mysql-data:

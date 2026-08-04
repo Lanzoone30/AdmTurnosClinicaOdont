@@ -1,0 +1,17 @@
+target/
+.git/
+.gitignore
+.opencode/
+.vscode/
+Documentacion/
+bd/
+graphify-out/
+node_modules/
+*.iml
+*.ipr
+*.iws
+.DS_Store
+repomix-output.xml
+README.md
+docker/docker-compose.yml
+docker/Dockerfile
