@@ -27,4 +27,19 @@ public interface TurnoRepository extends JpaRepository<Turno, Integer> {
      * @return turnos del paciente
      */
     List<Turno> findByPacienteId(Integer pacienteId);
+
+    /**
+     * Cuenta los turnos en una fecha especifica.
+     *
+     * @param fecha fecha a contar
+     * @return cantidad de turnos en esa fecha
+     */
+    long countByFechaTurno(LocalDate fecha);
+
+    /**
+     * Obtiene los proximos turnos (ordenados por fecha descendente).
+     *
+     * @return lista de los proximos turnos
+     */
+    List<Turno> findTop5ByOrderByFechaTurnoDescHoraTurnoDesc();
 }

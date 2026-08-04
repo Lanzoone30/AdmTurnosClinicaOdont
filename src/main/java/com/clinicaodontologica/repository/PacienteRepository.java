@@ -20,4 +20,11 @@ public interface PacienteRepository extends JpaRepository<Paciente, Integer> {
      */
     List<Paciente> findByNombreContainingIgnoreCaseOrApellidoContainingIgnoreCase(
             String nombre, String apellido);
+
+    /**
+     * Obtiene los ultimos pacientes registrados.
+     *
+     * @return lista de los ultimos 5 pacientes
+     */
+    List<Paciente> findTop5ByOrderByIdDesc();
 }
