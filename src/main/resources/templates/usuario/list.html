@@ -43,7 +43,8 @@
                                     <td th:text="${usuario.id}">1</td>
                                     <td th:text="${usuario.nombreUsuario}">Nombre</td>
                                     <td>
-                                        <span class="badge badge-amber" th:text="${usuario.rol}">Rol</span>
+                                        <span class="badge" th:classappend="'badge-' + ${usuario.rol.name().toLowerCase()}"
+                                            th:text="${usuario.rol.name()}">Rol</span>
                                     </td>
                                     <td>
                                         <div class="actions text-right">

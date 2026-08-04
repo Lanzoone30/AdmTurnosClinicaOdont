@@ -717,11 +717,50 @@ a:hover {
   color: #c99700;
 }
 
+.stat-card-value {
+  font-size: 32px;
+  font-weight: 900;
+  margin: 0 0 2px;
+  line-height: 1.1;
+}
+
+.stat-card--primary .stat-card-value { color: var(--primary); }
+.stat-card--success .stat-card-value { color: var(--success); }
+.stat-card--info .stat-card-value { color: var(--info); }
+.stat-card--warning .stat-card-value { color: #c99700; }
+.stat-card--danger .stat-card-value { color: var(--danger); }
+
 .stat-card-text {
   margin: 0;
   color: var(--text-muted);
   font-size: 14px;
 }
+
+/* ==========================================================================
+   Dashboard: tablas compactas
+   ========================================================================== */
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-top: 24px;
+}
+
+@media (max-width: 768px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ==========================================================================
+   Badges para roles
+   ========================================================================== */
+
+.badge-admin { background: var(--primary); color: #fff; }
+.badge-odontologo { background: var(--success); color: #fff; }
+.badge-secretario { background: var(--info); color: #fff; }
+.badge-paciente { background: var(--warning); color: #5a5c69; }
 
 .stat-card-icon {
   float: right;
@@ -760,6 +799,54 @@ a:hover {
 .badge-amber {
   background: rgba(246, 194, 62, 0.2);
   color: #966a00;
+}
+
+.badge-success {
+  background: rgba(28, 200, 138, 0.14);
+  color: #12875e;
+}
+
+.badge-secondary {
+  background: rgba(90, 92, 105, 0.12);
+  color: var(--text);
+}
+
+/* ==========================================================================
+   Table compacta (dashboard)
+   ========================================================================== */
+
+.table-sm th,
+.table-sm td {
+  padding: 8px 12px;
+  font-size: 13px;
+}
+
+.table-sm td {
+  white-space: nowrap;
+}
+
+/* ==========================================================================
+   Empty state
+   ========================================================================== */
+
+.empty-state {
+  padding: 32px 16px;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+.empty-state p {
+  margin: 0;
+}
+
+/* ==========================================================================
+   Button sm
+   ========================================================================== */
+
+.btn-sm {
+  padding: 6px 14px;
+  font-size: 13px;
 }
 
 /* ==========================================================================

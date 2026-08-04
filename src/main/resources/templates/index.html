@@ -10,40 +10,128 @@
         <header th:replace="~{fragments/layout :: topbar}"></header>
 
         <main class="app-content">
-            <h1 class="page-title">Sistema de Administración de Turnos</h1>
-            <p class="page-subtitle">Clínica Odontológica</p>
+            <h1 class="page-title">Dashboard</h1>
+            <p class="page-subtitle">Resumen del sistema — Clínica Odontológica</p>
 
+            <!-- Metricas principales -->
             <div class="stat-grid">
                 <a class="stat-card stat-card--primary" th:href="@{/pacientes}">
                     <i class="fas fa-hospital-user stat-card-icon"></i>
                     <h2 class="stat-card-label">Pacientes</h2>
-                    <p class="stat-card-text">Gestionar pacientes</p>
+                    <p class="stat-card-value" th:text="${dashboard.totalPacientes}">0</p>
+                    <p class="stat-card-text">Registrados en el sistema</p>
                 </a>
 
                 <a class="stat-card stat-card--success" th:href="@{/odontologos}">
                     <i class="fas fa-notes-medical stat-card-icon"></i>
                     <h2 class="stat-card-label">Odontólogos</h2>
-                    <p class="stat-card-text">Gestionar odontólogos</p>
+                    <p class="stat-card-value" th:text="${dashboard.totalOdontologos}">0</p>
+                    <p class="stat-card-text">Profesionales activos</p>
                 </a>
 
                 <a class="stat-card stat-card--info" th:href="@{/turnos}">
                     <i class="fas fa-calendar-check stat-card-icon"></i>
                     <h2 class="stat-card-label">Turnos</h2>
-                    <p class="stat-card-text">Gestionar turnos</p>
+                    <p class="stat-card-value" th:text="${dashboard.totalTurnos}">0</p>
+                    <p class="stat-card-text">Total agendados</p>
                 </a>
 
                 <a class="stat-card stat-card--warning" th:href="@{/usuarios}">
                     <i class="fas fa-user-cog stat-card-icon"></i>
                     <h2 class="stat-card-label">Usuarios</h2>
-                    <p class="stat-card-text">Gestionar usuarios</p>
+                    <p class="stat-card-value" th:text="${dashboard.totalUsuarios}">0</p>
+                    <p class="stat-card-text">Del sistema</p>
                 </a>
             </div>
-        </main>
 
-        <footer th:replace="~{fragments/layout :: footer}"></footer>
+            <!-- Turnos de hoy -->
+            <div class="stat-grid" style="margin-top:20px">
+                <a class="stat-card stat-card--danger" th:href="@{/turnos}">
+                    <i class="fas fa-clock stat-card-icon"></i>
+                    <h2 class="stat-card-label">Turnos de Hoy</h2>
+                    <p class="stat-card-value" th:text="${dashboard.turnosHoy}">0</p>
+                    <p class="stat-card-text"><span th:text="${#temporals.format(#temporals.createToday(), 'dd/MM/yyyy')}">hoy</span></p>
+                </a>
+            </div>
+
+            <!-- Tablas de detalle -->
+            <div class="dashboard-grid">
+                <!-- Proximos turnos -->
+                <div class="panel">
+                    <div class="panel-header">
+                        <h2 class="panel-title">Próximos Turnos</h2>
+                        <a class="btn btn-sm btn-primary" th:href="@{/turnos/nuevo}">
+                            <i class="fas fa-plus"></i> Nuevo
+                        </a>
+                    </div>
+                    <div class="panel-body">
+                        <div th:if="${dashboard.proximosTurnos.isEmpty()}" class="empty-state">
+                            <p>No hay turnos registrados.</p>
+                        </div>
+                        <div class="table-wrap" th:unless="${dashboard.proximosTurnos.isEmpty()}">
+                            <table class="table table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Fecha</th>
+                                        <th>Hora</th>
+                                        <th>Paciente</th>
+                                        <th>Odontólogo</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="turno : ${dashboard.proximosTurnos}">
+                                        <td th:text="${#temporals.format(turno.fechaTurno, 'dd/MM/yyyy')}">fecha</td>
+                                        <td th:text="${#temporals.format(turno.horaTurno, 'HH:mm')}">hora</td>
+                                        <td th:text="${turno.paciente.nombre + ' ' + turno.paciente.apellido}">paciente</td>
+                                        <td th:text="${turno.odontologo.nombre + ' ' + turno.odontologo.apellido}">odontologo</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Ultimos pacientes -->
+                <div class="panel">
+                    <div class="panel-header">
+                        <h2 class="panel-title">Últimos Pacientes</h2>
+                        <a class="btn btn-sm btn-primary" th:href="@{/pacientes/nuevo}">
+                            <i class="fas fa-plus"></i> Nuevo
+                        </a>
+                    </div>
+                    <div class="panel-body">
+                        <div th:if="${dashboard.ultimosPacientes.isEmpty()}" class="empty-state">
+                            <p>No hay pacientes registrados.</p>
+                        </div>
+                        <div class="table-wrap" th:unless="${dashboard.ultimosPacientes.isEmpty()}">
+                            <table class="table table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Nombre</th>
+                                        <th>DNI</th>
+                                        <th>Teléfono</th>
+                                        <th>O.Social</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="paciente : ${dashboard.ultimosPacientes}">
+                                        <td th:text="${paciente.nombre + ' ' + paciente.apellido}">nombre</td>
+                                        <td th:text="${paciente.dni}">dni</td>
+                                        <td th:text="${paciente.telefono}">tel</td>
+                                        <td>
+                                            <span class="badge" th:classappend="${paciente.tieneOS} ? 'badge-success' : 'badge-secondary'"
+                                                th:text="${paciente.tieneOS} ? 'Sí' : 'No'">os</span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
     </div>
 
-    <div th:replace="~{fragments/layout :: scripts}"></div>
-
+    <script th:src="@{/js/app.js}"></script>
 </body>
 </html>

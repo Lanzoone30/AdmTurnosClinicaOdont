@@ -34,8 +34,12 @@
                             </div>
                             <div class="field">
                                 <label class="field-label" for="rol">Rol</label>
-                                <input class="input" type="text" id="rol" name="rol"
-                                    th:value="*{rol}" placeholder="Ej: ADMIN, SECRETARIO" required>
+                                <select class="input" id="rol" name="rol" required>
+                                    <option value="" th:selected="${usuario.rol == null}" disabled>Seleccione un rol</option>
+                                    <option th:each="r : ${roles}" th:value="${r.name()}"
+                                        th:text="${r.name()}" th:selected="${usuario.rol != null && usuario.rol.name() == r.name()}">
+                                    </option>
+                                </select>
                             </div>
                         </div>
 
