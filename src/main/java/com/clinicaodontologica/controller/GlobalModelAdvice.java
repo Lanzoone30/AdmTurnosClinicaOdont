@@ -1,11 +1,8 @@
 package com.clinicaodontologica.controller;
 
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ModelAttribute;
-
-import java.util.Optional;
 
 /**
  * Advice global de modelos de vista: expone el usuario autenticado y su
@@ -38,8 +35,7 @@ public class GlobalModelAdvice {
             return "";
         }
         return authentication.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
-                .map(authority -> authority.replace("ROLE_", ""))
+                .map(authority -> authority.getAuthority().replace("ROLE_", ""))
                 .findFirst()
                 .orElse("");
     }
