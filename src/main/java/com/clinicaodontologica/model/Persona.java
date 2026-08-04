@@ -40,6 +40,8 @@ public class Persona implements Serializable {
     @EqualsAndHashCode.Include
     private Integer id;
 
+    /** DNI unico por persona. */
+    @Column(unique = true)
     private String dni;
 
     private String nombre;
@@ -53,4 +55,8 @@ public class Persona implements Serializable {
     /** Fecha de nacimiento en formato {@code yyyy-MM-dd}. */
     @Column(name = "fecha_nac")
     private LocalDate fechaNac;
+
+    /** Fecha de alta en el sistema. */
+    @Column(name = "fecha_alta")
+    private LocalDate fechaAlta;
 }

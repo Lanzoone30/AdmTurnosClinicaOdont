@@ -27,12 +27,23 @@ public class Paciente extends Persona {
 
     private boolean tieneOS;
 
+    /** Nombre de la obra social (solo si {@code tieneOS} es true). */
+    private String nombreOS;
+
+    /** Numero de afiliado en la obra social. */
+    private String numeroAfiliado;
+
     private String tipoSangre;
 
     /** Responsable legal del paciente (padre, tutor, etc.). */
     @OneToOne
     @JoinColumn(name = "responsable_id")
     private Responsable responsable;
+
+    /** Cuenta de usuario del paciente (portal de autogestion). */
+    @OneToOne
+    @JoinColumn(name = "usuario_id")
+    private Usuario usuario;
 
     /** Turnos asignados al paciente. */
     @OneToMany(mappedBy = "paciente")
