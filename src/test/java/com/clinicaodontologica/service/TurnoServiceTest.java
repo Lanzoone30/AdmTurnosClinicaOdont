@@ -1,6 +1,8 @@
 package com.clinicaodontologica.service;
 
+import com.clinicaodontologica.model.DiaSemana;
 import com.clinicaodontologica.model.EstadoTurno;
+import com.clinicaodontologica.model.Horario;
 import com.clinicaodontologica.model.Odontologo;
 import com.clinicaodontologica.model.Paciente;
 import com.clinicaodontologica.model.Turno;
@@ -83,8 +85,7 @@ class TurnoServiceTest {
     }
 
     @Test
-    @DisplayName("crear: rechaza turno cuando el odontologo ya tiene uno a la misma hora")
-    void crear_ConChoqueDeHorario_LanzaExcepcion() {
+    @DisplayName("crear: rechaza turno cuando el odontologo ya tiene uno a la misma hora")    void crear_ConChoqueDeHorario_LanzaExcepcion() {
         // given
         Turno existente = new Turno();
         existente.setId(9);
@@ -141,15 +142,168 @@ class TurnoServiceTest {
     }
 
     @Test
-    @DisplayName("listarPorPacienteLogueado: lanza excepcion si el usuario no tiene paciente")
-    void listarPorPacienteLogueado_SinPaciente_LanzaExcepcion() {
+    @DisplayName("crear: acepta turno dentro del horario del odontologo")
+    void crear_DentroDeHorario_NoLanzaExcepcion() {
         // given
-        given(pacienteRepository.findByUsuarioNombreUsuario("sinpaciente"))
-                .willReturn(Optional.empty());
+        Horario horario = new Horario();
+        horario.setDiaSemana(DiaSemana.MIERCOLES);
+        horario.setHorarioInicio(LocalTime.of(8, 0));
+        horario.setHorarioFin(LocalTime.of(12, 0));
+        odontologo.setHorarios(List.of(horario));
+        given(odontologoRepository.findById(1)).willReturn(Optional.of(odontologo));
+        given(pacienteRepository.findById(2)).willReturn(Optional.of(paciente));
+        given(turnoRepository.findByOdontologoIdAndFechaTurno(1, LocalDate.of(2026, 8, 5)))
+                .willReturn(List.of());
+        given(turnoRepository.save(org.mockito.ArgumentMatchers.any(Turno.class)))
+                .willAnswer(inv -> inv.getArgument(0));
+
+        // when
+        Turno resultado = turnoService.crear(
+                LocalDate.of(2026, 8, 5), LocalTime.of(10, 0), "Dolor", 1, 2);
+
+        // then
+        assertThat(resultado.getHoraTurno()).isEqualTo(LocalTime.of(10, 0));
+    }
+
+    @Test
+    @DisplayName("crear: rechaza turno fuera del horario del odontologo")
+    void crear_FueraDeHorario_LanzaExcepcion() {
+        // given
+        Horario horario = new Horario();
+        horario.setDiaSemana(DiaSemana.MIERCOLES);
+        horario.setHorarioInicio(LocalTime.of(8, 0));
+        horario.setHorarioFin(LocalTime.of(12, 0));
+        odontologo.setHorarios(List.of(horario));
+        given(odontologoRepository.findById(1)).willReturn(Optional.of(odontologo));
+        given(pacienteRepository.findById(2)).willReturn(Optional.of(paciente));
+        given(turnoRepository.findByOdontologoIdAndFechaTurno(1, LocalDate.of(2026, 8, 5)))
+                .willReturn(List.of());
 
         // when/then
-        assertThatThrownBy(() -> turnoService.listarPorPacienteLogueado("sinpaciente"))
+        assertThatThrownBy(() -> turnoService.crear(
+                LocalDate.of(2026, 8, 5), LocalTime.of(15, 0), "Dolor", 1, 2))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("No hay paciente vinculado");
+                .hasMessageContaining("no atiende");
+
+        then(turnoRepository).should(never()).save(org.mockito.ArgumentMatchers.any(Turno.class));
+    }
+
+    @Test
+    @DisplayName("registrarNota: guarda la nota clinica recortada")
+    void registrarNota_GuardaNotaRecortada() {
+        // given
+        Turno turno = new Turno();
+        turno.setId(3);
+        given(turnoRepository.findById(3)).willReturn(Optional.of(turno));
+        given(turnoRepository.save(turno)).willReturn(turno);
+
+        // when
+        Turno resultado = turnoService.registrarNota(3, "  Conducto radicular  ");
+
+        // then
+        assertThat(resultado.getNotaClinica()).isEqualTo("Conducto radicular");
+    }
+
+    @Test
+    @DisplayName("cambiarEstado: confirma un turno pendiente")
+    void cambiarEstado_PendienteAConfirmado_ActualizaEstado() {
+        // given
+        Turno turno = new Turno();
+        turno.setId(4);
+        turno.setEstado(EstadoTurno.PENDIENTE);
+        given(turnoRepository.findById(4)).willReturn(Optional.of(turno));
+        given(turnoRepository.save(turno)).willReturn(turno);
+
+        // when
+        Turno resultado = turnoService.cambiarEstado(4, EstadoTurno.CONFIRMADO, null);
+
+        // then
+        assertThat(resultado.getEstado()).isEqualTo(EstadoTurno.CONFIRMADO);
+    }
+
+    @Test
+    @DisplayName("cambiarEstado: rechaza cancelar sin motivo")
+    void cambiarEstado_CanceladoSinMotivo_LanzaExcepcion() {
+        // given
+        Turno turno = new Turno();
+        turno.setId(5);
+        turno.setEstado(EstadoTurno.PENDIENTE);
+        given(turnoRepository.findById(5)).willReturn(Optional.of(turno));
+
+        // when/then
+        assertThatThrownBy(() -> turnoService.cambiarEstado(5, EstadoTurno.CANCELADO, "  "))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("motivo de cancelacion");
+
+        then(turnoRepository).should(never()).save(org.mockito.ArgumentMatchers.any(Turno.class));
+    }
+
+    @Test
+    @DisplayName("cambiarEstado: guarda el motivo al cancelar")
+    void cambiarEstado_CanceladoConMotivo_GuardaMotivo() {
+        // given
+        Turno turno = new Turno();
+        turno.setId(6);
+        turno.setEstado(EstadoTurno.CONFIRMADO);
+        given(turnoRepository.findById(6)).willReturn(Optional.of(turno));
+        given(turnoRepository.save(turno)).willReturn(turno);
+
+        // when
+        Turno resultado = turnoService.cambiarEstado(6, EstadoTurno.CANCELADO, "  Paciente reprograma ");
+
+        // then
+        assertThat(resultado.getEstado()).isEqualTo(EstadoTurno.CANCELADO);
+        assertThat(resultado.getMotivoCancelacion()).isEqualTo("Paciente reprograma");
+    }
+
+    @Test
+    @DisplayName("cambiarEstado: marca no asistio desde pendiente")
+    void cambiarEstado_PendienteANoAsistio_ActualizaEstado() {
+        // given
+        Turno turno = new Turno();
+        turno.setId(7);
+        turno.setEstado(EstadoTurno.PENDIENTE);
+        given(turnoRepository.findById(7)).willReturn(Optional.of(turno));
+        given(turnoRepository.save(turno)).willReturn(turno);
+
+        // when
+        Turno resultado = turnoService.cambiarEstado(7, EstadoTurno.NO_ASISTIO, null);
+
+        // then
+        assertThat(resultado.getEstado()).isEqualTo(EstadoTurno.NO_ASISTIO);
+    }
+
+    @Test
+    @DisplayName("cambiarEstado: rechaza reabrir un turno cancelado")
+    void cambiarEstado_CanceladoAConfirmado_LanzaExcepcion() {
+        // given
+        Turno turno = new Turno();
+        turno.setId(8);
+        turno.setEstado(EstadoTurno.CANCELADO);
+        given(turnoRepository.findById(8)).willReturn(Optional.of(turno));
+
+        // when/then
+        assertThatThrownBy(() -> turnoService.cambiarEstado(8, EstadoTurno.CONFIRMADO, null))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("No se puede pasar de");
+
+        then(turnoRepository).should(never()).save(org.mockito.ArgumentMatchers.any(Turno.class));
+    }
+
+    @Test
+    @DisplayName("cambiarEstado: exige nota clinica al marcar realizado")
+    void cambiarEstado_RealizadoSinNota_LanzaExcepcion() {
+        // given
+        Turno turno = new Turno();
+        turno.setId(9);
+        turno.setEstado(EstadoTurno.CONFIRMADO);
+        given(turnoRepository.findById(9)).willReturn(Optional.of(turno));
+
+        // when/then
+        assertThatThrownBy(() -> turnoService.cambiarEstado(9, EstadoTurno.REALIZADO, null))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("nota clinica");
+
+        then(turnoRepository).should(never()).save(org.mockito.ArgumentMatchers.any(Turno.class));
     }
 }

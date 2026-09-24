@@ -2,6 +2,7 @@ package com.clinicaodontologica.service;
 
 import com.clinicaodontologica.model.Rol;
 import com.clinicaodontologica.model.Usuario;
+import com.clinicaodontologica.repository.OdontologoRepository;
 import com.clinicaodontologica.repository.UsuarioRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -10,12 +11,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
-
 import java.util.Optional;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.never;
 
 /**
  * Tests unitarios de {@link UsuarioService}.
@@ -26,6 +27,9 @@ class UsuarioServiceTest {
 
     @Mock
     private UsuarioRepository usuarioRepository;
+
+    @Mock
+    private OdontologoRepository odontologoRepository;
 
     @Mock
     private PasswordEncoder passwordEncoder;
@@ -128,5 +132,19 @@ class UsuarioServiceTest {
         // then
         assertThat(resultado.getNombreUsuario()).isEqualTo("juan2");
         assertThat(resultado.getContrasenia()).isEqualTo("$2a$10$viejo");
+    }
+
+    @Test
+    @DisplayName("eliminar: bloquea si el usuario esta asociado a un odontologo")
+    void eliminar_AsociadoAOdontologo_LanzaExcepcion() {
+        // given
+        given(odontologoRepository.existsByUsuarioId(1)).willReturn(true);
+
+        // when/then
+        assertThatThrownBy(() -> usuarioService.eliminar(1))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("odontologo");
+
+        then(usuarioRepository).should(never()).deleteById(1);
     }
 }
