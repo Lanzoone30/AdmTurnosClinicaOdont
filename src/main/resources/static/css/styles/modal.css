@@ -1,0 +1,41 @@
+/* Native <dialog> used for confirmations across sections (turno, paciente, ...). */
+.modal {
+  border: 0;
+  border-radius: var(--radius);
+  padding: 0;
+  box-shadow: var(--shadow-lg);
+  width: min(440px, calc(100vw - 32px));
+}
+
+.modal::backdrop {
+  background: rgba(90, 92, 105, 0.5);
+}
+
+.modal-form {
+  padding: 24px;
+}
+
+.modal-title {
+  margin: 0 0 8px;
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--primary-dark);
+}
+
+.modal-text {
+  margin: 0 0 18px;
+  color: var(--text-muted);
+}
+
+.modal-error {
+  margin: 6px 0 0;
+  font-size: 13px;
+  color: var(--danger);
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 22px;
+}

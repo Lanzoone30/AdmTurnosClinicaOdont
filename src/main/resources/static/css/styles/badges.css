@@ -1,0 +1,61 @@
+/* ==========================================================================
+   Badges para roles
+   ========================================================================== */
+
+.badge-admin { background: var(--primary); color: #fff; }
+.badge-odontologo { background: var(--success); color: #fff; }
+.badge-secretario { background: var(--info); color: #fff; }
+.badge-paciente { background: var(--warning); color: #5a5c69; }
+
+/* ==========================================================================
+   Badges
+   ========================================================================== */
+
+.badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.badge-blue {
+  background: rgba(78, 115, 223, 0.12);
+  color: var(--primary-dark);
+}
+
+.badge-green {
+  background: rgba(28, 200, 138, 0.14);
+  color: #12875e;
+}
+
+.badge-cyan {
+  background: rgba(54, 185, 204, 0.14);
+  color: #1d7d8c;
+}
+
+.badge-amber {
+  background: rgba(246, 194, 62, 0.2);
+  color: #966a00;
+}
+
+.badge-success {
+  background: rgba(28, 200, 138, 0.14);
+  color: #12875e;
+}
+
+.badge-secondary {
+  background: rgba(90, 92, 105, 0.12);
+  color: var(--text);
+}
+
+.badge-danger {
+  background: rgba(231, 74, 59, 0.12);
+  color: #c03024;
+}
+
+.badge-info {
+  background: rgba(54, 185, 204, 0.14);
+  color: #1d7d8c;
+}
+

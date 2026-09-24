@@ -1,0 +1,38 @@
+/* ==========================================================================
+   ClinicaOdontologica - Design System
+   Sistema visual propio basado en la paleta legacy del proyecto (SB Admin 2):
+   azul #4e73df, azul profundo #224abe, verde #1cc88a, cyan #36b9cc,
+   ambar #f6c23e, rojo #e74a3b, grises #5a5c69 / #858796, fondo #f8f9fc.
+   ========================================================================== */
+
+:root {
+  /* Paleta legacy */
+  --primary: #4e73df;
+  --primary-dark: #224abe;
+  --success: #1cc88a;
+  --info: #36b9cc;
+  --warning: #f6c23e;
+  --danger: #e74a3b;
+
+  --bg: #f8f9fc;
+  --surface: #ffffff;
+  --text: #5a5c69;
+  --text-muted: #636577;
+  --border: #e4e7f0;
+  --border-strong: #d5d9e6;
+
+  --primary-grad: linear-gradient(180deg, #4e73df 10%, #224abe 100%);
+
+  /* Sombras con offset + blur reales */
+  --shadow-sm: 0 1px 2px rgba(90, 92, 105, 0.07), 0 1px 3px rgba(90, 92, 105, 0.08);
+  --shadow-md: 0 2px 4px -2px rgba(90, 92, 105, 0.1), 0 8px 16px -6px rgba(90, 92, 105, 0.14);
+  --shadow-lg: 0 8px 16px -6px rgba(34, 74, 190, 0.18), 0 24px 48px -12px rgba(34, 74, 190, 0.22);
+
+  /* Metricas */
+  --sidebar-width: 252px;
+  --radius: 14px;
+  --radius-sm: 8px;
+  --topbar-height: 64px;
+
+  --font: 'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}

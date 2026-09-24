@@ -1,0 +1,118 @@
+/* ==========================================================================
+   Base
+   ========================================================================== */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font);
+  font-size: 15px;
+  line-height: 1.55;
+  color: var(--text);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: var(--primary);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+:focus-visible {
+  outline: 3px solid rgba(78, 115, 223, 0.45);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* ==========================================================================
+   Tipografia de contenido
+   ========================================================================== */
+
+.page-title {
+  margin: 0 0 6px;
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  color: var(--text);
+}
+
+.page-subtitle {
+  margin: 0 0 26px;
+  color: var(--text-muted);
+  font-size: 15px;
+}
+
+/* ==========================================================================
+   Pagina de error
+   ========================================================================== */
+
+.error-box {
+  text-align: center;
+  padding: 60px 24px;
+}
+
+.error-code {
+  font-size: 88px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  line-height: 1;
+  background: var(--primary-grad);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  margin-bottom: 10px;
+}
+
+.error-title {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--text);
+  margin: 0 0 6px;
+}
+
+.error-text {
+  color: var(--text-muted);
+  margin: 0 0 22px;
+}
+
+/* ==========================================================================
+   Utilidades
+   ========================================================================== */
+
+.text-right {
+  text-align: right;
+}
+
+.mt-24 {
+  margin-top: 24px;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+}
+
+.inline-form {
+  display: inline;
+  margin: 0;
+}
+
+.inline-form {
+  display: inline;
+}
