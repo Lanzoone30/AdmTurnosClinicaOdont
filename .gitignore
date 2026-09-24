@@ -6,8 +6,10 @@
 .vscode/
 .classpath
 .project
-bd/
 Documentacion/
 .settings/
 .DS_Store
-graphify-out/
+my-project/
+temp/
+specs/
+.specify/
