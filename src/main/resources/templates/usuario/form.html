@@ -24,6 +24,7 @@
                                 <label class="field-label" for="nombreUsuario">Nombre de usuario</label>
                                 <input class="input" type="text" id="nombreUsuario" name="nombreUsuario"
                                     th:value="*{nombreUsuario}" placeholder="Nombre de usuario" required>
+                                <p th:replace="~{fragments/layout :: fieldError('nombreUsuario')}"></p>
                             </div>
                             <div class="field">
                                 <label class="field-label" for="contrasenia">Contraseña</label>

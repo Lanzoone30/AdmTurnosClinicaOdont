@@ -24,16 +24,19 @@
                                 <label class="field-label" for="dni">DNI</label>
                                 <input class="input" type="text" id="dni" name="dni"
                                     th:value="*{dni}" placeholder="Ej: 30.123.456" required>
+                                <p th:replace="~{fragments/layout :: fieldError('dni')}"></p>
                             </div>
                             <div class="field">
                                 <label class="field-label" for="nombre">Nombre</label>
                                 <input class="input" type="text" id="nombre" name="nombre"
                                     th:value="*{nombre}" placeholder="Nombre" required>
+                                <p th:replace="~{fragments/layout :: fieldError('nombre')}"></p>
                             </div>
                             <div class="field">
                                 <label class="field-label" for="apellido">Apellido</label>
                                 <input class="input" type="text" id="apellido" name="apellido"
                                     th:value="*{apellido}" placeholder="Apellido" required>
+                                <p th:replace="~{fragments/layout :: fieldError('apellido')}"></p>
                             </div>
                             <div class="field">
                                 <label class="field-label" for="telefono">Teléfono</label>
@@ -51,6 +54,34 @@
                                     th:value="*{especialidad}" placeholder="Ej: Ortodoncia, Endodoncia">
                             </div>
                         </div>
+
+                        <div class="nav-section">Horario de atención</div>
+
+                        <div class="table-wrap">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Día</th>
+                                        <th>Desde</th>
+                                        <th>Hasta</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="fila, i : *{horarios}">
+                                        <td>
+                                            <span th:text="${fila.diaSemana}">LUNES</span>
+                                            <input type="hidden" th:field="*{horarios[__${i.index}__].id}">
+                                            <input type="hidden" th:field="*{horarios[__${i.index}__].diaSemana}">
+                                        </td>
+                                        <td><input class="input" type="time"
+                                            th:field="*{horarios[__${i.index}__].horarioInicio}"></td>
+                                        <td><input class="input" type="time"
+                                            th:field="*{horarios[__${i.index}__].horarioFin}"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <p class="text-muted">Deje un día en blanco si no se atiende.</p>
 
                         <div class="actions mt-24">
                             <button class="btn btn-primary" type="submit"

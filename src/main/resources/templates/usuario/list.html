@@ -56,7 +56,7 @@
                                             <form class="inline-form"
                                                 th:action="@{/usuarios/eliminar/{id}(id=${usuario.id})}"
                                                 method="post"
-                                                onsubmit="return confirm('¿Eliminar al usuario?');">
+                                                data-confirm="¿Eliminar al usuario?">
                                                 <button class="btn-icon btn-icon-delete" type="submit"
                                                     title="Eliminar">
                                                     <i class="fas fa-trash"></i>

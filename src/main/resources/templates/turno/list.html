@@ -62,6 +62,7 @@
                                     <th>Doctor</th>
                                     <th>Paciente</th>
                                     <th>Estado</th>
+                                    <th>Nota clínica</th>
                                     <th class="text-right">Acción</th>
                                 </tr>
                             </thead>
@@ -76,8 +77,47 @@
                                         <span class="badge" th:classappend="'badge-' + ${#strings.toLowerCase(turno.estado.name())}"
                                             th:text="${turno.estado.name()}">estado</span>
                                     </td>
+                                    <td th:text="${turno.notaClinica != null and !turno.notaClinica.isBlank()} ? ${turno.notaClinica} : '—'">—</td>
                                     <td>
                                         <div class="actions text-right">
+                                            <form class="inline-form"
+                                                th:if="${turno.estado.name() == 'PENDIENTE'}"
+                                                th:action="@{/turnos/{id}/estado(id=${turno.id})}" method="post">
+                                                <input type="hidden" name="estado" value="CONFIRMADO">
+                                                <button class="btn-icon btn-icon-edit" type="submit" title="Confirmar">
+                                                    <i class="fas fa-check"></i>
+                                                </button>
+                                            </form>
+                                            <form class="inline-form"
+                                                th:if="${turno.estado.name() == 'CONFIRMADO'}"
+                                                th:action="@{/turnos/{id}/estado(id=${turno.id})}" method="post">
+                                                <input type="hidden" name="estado" value="REALIZADO">
+                                                <input type="hidden" name="motivo" value="">
+                                                <button class="btn-icon btn-icon-edit" type="submit"
+                                                    title="Marcar realizado (requiere nota clínica)">
+                                                    <i class="fas fa-tooth"></i>
+                                                </button>
+                                            </form>
+                                            <form class="inline-form"
+                                                th:if="${turno.estado.name() == 'PENDIENTE' or turno.estado.name() == 'CONFIRMADO'}"
+                                                th:action="@{/turnos/{id}/estado(id=${turno.id})}" method="post"
+                                                data-estado-dialog>
+                                                <input type="hidden" name="estado" value="CANCELADO">
+                                                <input type="hidden" name="motivo" value="">
+                                                <button class="btn-icon btn-icon-delete" type="submit" title="Cancelar">
+                                                    <i class="fas fa-ban"></i>
+                                                </button>
+                                            </form>
+                                            <form class="inline-form"
+                                                th:if="${turno.estado.name() == 'PENDIENTE' or turno.estado.name() == 'CONFIRMADO'}"
+                                                th:action="@{/turnos/{id}/estado(id=${turno.id})}" method="post"
+                                                data-estado-dialog>
+                                                <input type="hidden" name="estado" value="NO_ASISTIO">
+                                                <input type="hidden" name="motivo" value="">
+                                                <button class="btn-icon btn-icon-delete" type="submit" title="No asistió">
+                                                    <i class="fas fa-user-slash"></i>
+                                                </button>
+                                            </form>
                                             <a class="btn-icon btn-icon-edit"
                                                 th:href="@{/turnos/editar/{id}(id=${turno.id})}"
                                                 title="Editar">
@@ -86,7 +126,7 @@
                                             <form class="inline-form"
                                                 th:action="@{/turnos/eliminar/{id}(id=${turno.id})}"
                                                 method="post"
-                                                onsubmit="return confirm('¿Eliminar el turno?');">
+                                                data-confirm="¿Eliminar el turno?">
                                                 <button class="btn-icon btn-icon-delete" type="submit"
                                                     title="Eliminar">
                                                     <i class="fas fa-trash"></i>

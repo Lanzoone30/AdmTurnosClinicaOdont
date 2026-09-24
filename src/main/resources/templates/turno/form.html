@@ -56,10 +56,14 @@
                                     <option th:each="paciente : ${pacientes}"
                                         th:value="${paciente.id}"
                                         th:text="${paciente.nombre + ' ' + paciente.apellido}"
+                                        th:attr="data-alergias=${paciente.alergias != null and !paciente.alergias.isBlank()} ? 'Alergias: ' + ${paciente.alergias} : ''"
                                         th:selected="${turno != null && turno.paciente != null && turno.paciente.id == paciente.id}">
                                         Paciente
                                     </option>
                                 </select>
+                                <p class="text-muted turno-alergias" id="alergiasPaciente"
+                                    th:text="${turno != null && turno.paciente != null && turno.paciente.alergias != null and !turno.paciente.alergias.isBlank()} ? 'Alergias: ' + ${turno.paciente.alergias} : ''"
+                                    th:hidden="${turno == null or turno.paciente == null or turno.paciente.alergias == null or turno.paciente.alergias.isBlank()}">Alergias</p>
                             </div>
                             <div class="field">
                                 <label class="field-label" for="estado">Estado</label>
@@ -70,6 +74,12 @@
                                         Estado
                                     </option>
                                 </select>
+                            </div>
+                            <div class="field field-full">
+                                <label class="field-label" for="notaClinica">Nota clínica</label>
+                                <textarea class="input" id="notaClinica" name="notaClinica" rows="4"
+                                    placeholder="Diagnóstico y tratamiento realizado"
+                                    th:text="${turno != null ? turno.notaClinica : ''}"></textarea>
                             </div>
                         </div>
 

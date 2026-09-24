@@ -70,7 +70,7 @@
                                             <form class="inline-form"
                                                 th:action="@{/odontologos/eliminar/{id}(id=${odontologo.id})}"
                                                 method="post"
-                                                onsubmit="return confirm('¿Eliminar al odontólogo?');">
+                                                data-confirm="¿Eliminar al odontólogo?">
                                                 <button class="btn-icon btn-icon-delete" type="submit"
                                                     title="Eliminar">
                                                     <i class="fas fa-trash"></i>
