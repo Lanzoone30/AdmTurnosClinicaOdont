@@ -118,4 +118,10 @@ public interface TurnoRepository extends JpaRepository<Turno, Integer> {
      * @return lista de los proximos turnos
      */
     List<Turno> findTop5ByOrderByFechaTurnoDescHoraTurnoDesc();
+
+    /** Checks if a patient has any appointment, to guard against deletes. */
+    boolean existsByPacienteId(Integer pacienteId);
+
+    /** Checks if a dentist has any appointment, to guard against deletes. */
+    boolean existsByOdontologoId(Integer odontologoId);
 }

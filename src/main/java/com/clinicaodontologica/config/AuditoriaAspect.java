@@ -61,6 +61,15 @@ public class AuditoriaAspect {
                 "Eliminado id=" + id);
     }
 
+    /** Audits turno state changes and clinical-note updates. */
+    @AfterReturning(pointcut = "execution(* com.clinicaodontologica.service.*Service.cambiarEstado(..))"
+            + " || execution(* com.clinicaodontologica.service.*Service.registrarNota(..))",
+            returning = "resultado")
+    public void registrarCambioClinico(JoinPoint joinPoint, Object resultado) {
+        auditoriaService.registrar(nombreEntidad(joinPoint), TipoAccion.MODIFICAR,
+                resumen(resultado, joinPoint.getSignature().getName()));
+    }
+
     /**
      * Deriva el nombre de la entidad del nombre de la clase del servicio
      * (ej: "TurnoService" -&gt; "Turno").

@@ -1,5 +1,6 @@
 package com.clinicaodontologica.model;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -45,6 +46,14 @@ public class Turno implements Serializable {
     /** Estado del ciclo de vida del turno. Por defecto {@code PENDIENTE}. */
     @Enumerated(EnumType.STRING)
     private EstadoTurno estado = EstadoTurno.PENDIENTE;
+
+    /** Diagnosis and treatment performed. Required when set to REALIZADO. */
+    @Column(length = 2000)
+    private String notaClinica;
+
+    /** Cancellation reason. Required when set to CANCELADO. */
+    @Column(length = 500)
+    private String motivoCancelacion;
 
     @ManyToOne
     @JoinColumn(name = "id_odonto")

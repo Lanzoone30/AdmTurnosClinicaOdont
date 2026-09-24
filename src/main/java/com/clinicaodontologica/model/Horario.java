@@ -1,6 +1,8 @@
 package com.clinicaodontologica.model;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -28,6 +30,10 @@ public class Horario implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @EqualsAndHashCode.Include
     private Integer id;
+
+    /** Weekday this availability applies to (nullable on legacy rows). */
+    @Enumerated(EnumType.STRING)
+    private DiaSemana diaSemana;
 
     private LocalTime horarioInicio;
 

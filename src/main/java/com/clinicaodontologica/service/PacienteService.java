@@ -2,6 +2,7 @@ package com.clinicaodontologica.service;
 
 import com.clinicaodontologica.model.Paciente;
 import com.clinicaodontologica.repository.PacienteRepository;
+import com.clinicaodontologica.repository.TurnoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +18,7 @@ import java.util.List;
 public class PacienteService {
 
     private final PacienteRepository pacienteRepository;
+    private final TurnoRepository turnoRepository;
 
     /**
      * Lista todos los pacientes.
@@ -127,6 +129,10 @@ public class PacienteService {
      */
     @Transactional
     public void eliminar(Integer id) {
+        if (turnoRepository.existsByPacienteId(id)) {
+            throw new IllegalArgumentException(
+                    "No se puede eliminar el paciente: tiene turnos registrados");
+        }
         pacienteRepository.deleteById(id);
     }
 }

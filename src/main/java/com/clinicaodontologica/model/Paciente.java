@@ -1,5 +1,6 @@
 package com.clinicaodontologica.model;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
@@ -35,6 +36,18 @@ public class Paciente extends Persona {
 
     private String tipoSangre;
 
+    /** Known allergies. Free text. */
+    @Column(length = 1000)
+    private String alergias;
+
+    /** Relevant medical history. Free text. */
+    @Column(length = 1000)
+    private String antecedentes;
+
+    /** Current medication. Free text. */
+    @Column(length = 1000)
+    private String medicacion;
+
     /** Responsable legal del paciente (padre, tutor, etc.). */
     @OneToOne
     @JoinColumn(name = "responsable_id")
@@ -46,6 +59,7 @@ public class Paciente extends Persona {
     private Usuario usuario;
 
     /** Turnos asignados al paciente. */
+    @ToString.Exclude
     @OneToMany(mappedBy = "paciente")
     private List<Turno> turnos = new ArrayList<>();
 }

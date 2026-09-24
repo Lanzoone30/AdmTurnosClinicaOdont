@@ -35,8 +35,22 @@ public class AuditoriaService {
         registro.setUsuario(usuarioActual());
         registro.setEntidad(entidad);
         registro.setAccion(accion);
-        registro.setDetalle(detalle);
+        registro.setDetalle(truncar(detalle));
         auditoriaRepository.save(registro);
+    }
+
+    /**
+     * Caps the audit detail to the column size so a verbose entity
+     * {@code toString()} (clinical fields) cannot overflow it.
+     *
+     * @param detalle resumen del cambio
+     * @return el resumen recortado a 255 caracteres
+     */
+    private String truncar(String detalle) {
+        if (detalle == null || detalle.length() <= 255) {
+            return detalle;
+        }
+        return detalle.substring(0, 255);
     }
 
     /**

@@ -1,6 +1,7 @@
 package com.clinicaodontologica.service;
 
 import com.clinicaodontologica.model.Usuario;
+import com.clinicaodontologica.repository.OdontologoRepository;
 import com.clinicaodontologica.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -18,6 +19,7 @@ import java.util.List;
 public class UsuarioService {
 
     private final UsuarioRepository usuarioRepository;
+    private final OdontologoRepository odontologoRepository;
     private final PasswordEncoder passwordEncoder;
 
     /**
@@ -115,6 +117,10 @@ public class UsuarioService {
      */
     @Transactional
     public void eliminar(Integer id) {
+        if (odontologoRepository.existsByUsuarioId(id)) {
+            throw new IllegalArgumentException(
+                    "No se puede eliminar el usuario: esta asociado a un odontologo");
+        }
         usuarioRepository.deleteById(id);
     }
 }

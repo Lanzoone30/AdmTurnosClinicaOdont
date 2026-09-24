@@ -9,6 +9,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -42,10 +44,15 @@ public class Persona implements Serializable {
 
     /** DNI unico por persona. */
     @Column(unique = true)
+    @NotBlank
     private String dni;
 
+    @NotBlank
+    @Size(max = 100)
     private String nombre;
 
+    @NotBlank
+    @Size(max = 100)
     private String apellido;
 
     private String telefono;

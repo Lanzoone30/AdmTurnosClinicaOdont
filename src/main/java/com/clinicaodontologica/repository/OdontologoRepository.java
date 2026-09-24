@@ -29,4 +29,7 @@ public interface OdontologoRepository extends JpaRepository<Odontologo, Integer>
      * @return el odontologo asociado, o vacio si no existe
      */
     Optional<Odontologo> findByUsuarioNombreUsuario(String nombreUsuario);
+
+    /** Checks if a user account is linked to any dentist, to guard user deletes. */
+    boolean existsByUsuarioId(Integer usuarioId);
 }

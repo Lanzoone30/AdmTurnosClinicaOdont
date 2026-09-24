@@ -1,5 +1,6 @@
 package com.clinicaodontologica.model;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
@@ -28,6 +29,7 @@ public class Odontologo extends Persona {
     private String especialidad;
 
     /** Turnos que atiende el odontologo. */
+    @ToString.Exclude
     @OneToMany(mappedBy = "odontologo")
     private List<Turno> turnos = new ArrayList<>();
 
@@ -35,7 +37,8 @@ public class Odontologo extends Persona {
     @JoinColumn(name = "usuario_id")
     private Usuario usuario;
 
-    @OneToOne
-    @JoinColumn(name = "horario_id")
-    private Horario horario;
+    /** Weekly availability, one entry per attended weekday. */
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "odontologo_id")
+    private List<Horario> horarios = new ArrayList<>();
 }

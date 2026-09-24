@@ -3,9 +3,11 @@ package com.clinicaodontologica.controller;
 import com.clinicaodontologica.model.Rol;
 import com.clinicaodontologica.model.Usuario;
 import com.clinicaodontologica.service.UsuarioService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -55,7 +57,12 @@ public class UsuarioController {
      * @return redireccion al listado
      */
     @PostMapping("/nuevo")
-    public String crear(@ModelAttribute Usuario usuario) {
+    public String crear(@Valid @ModelAttribute Usuario usuario, BindingResult result, Model model) {
+        if (result.hasErrors()) {
+            model.addAttribute("usuario", usuario);
+            model.addAttribute("roles", Rol.values());
+            return "usuario/form";
+        }
         usuarioService.crear(usuario);
         return "redirect:/usuarios";
     }
@@ -82,13 +89,21 @@ public class UsuarioController {
      * @return redireccion al listado
      */
     @PostMapping("/editar/{id}")
-    public String actualizar(@PathVariable Integer id, @ModelAttribute Usuario usuario,
-                             RedirectAttributes redirectAttributes) {
+    public String actualizar(@PathVariable Integer id, @Valid @ModelAttribute Usuario usuario,
+                             BindingResult result, Model model) {
+        usuario.setId(id);
+        if (result.hasErrors()) {
+            model.addAttribute("usuario", usuario);
+            model.addAttribute("roles", Rol.values());
+            return "usuario/form";
+        }
         try {
-            usuario.setId(id);
             usuarioService.actualizar(usuario);
         } catch (IllegalArgumentException e) {
-            redirectAttributes.addFlashAttribute("error", e.getMessage());
+            model.addAttribute("error", e.getMessage());
+            model.addAttribute("usuario", usuario);
+            model.addAttribute("roles", Rol.values());
+            return "usuario/form";
         }
         return "redirect:/usuarios";
     }
@@ -100,8 +115,12 @@ public class UsuarioController {
      * @return redireccion al listado
      */
     @PostMapping("/eliminar/{id}")
-    public String eliminar(@PathVariable Integer id) {
-        usuarioService.eliminar(id);
+    public String eliminar(@PathVariable Integer id, RedirectAttributes redirectAttributes) {
+        try {
+            usuarioService.eliminar(id);
+        } catch (IllegalArgumentException e) {
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+        }
         return "redirect:/usuarios";
     }
 }

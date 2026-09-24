@@ -2,9 +2,11 @@ package com.clinicaodontologica.controller;
 
 import com.clinicaodontologica.model.Paciente;
 import com.clinicaodontologica.service.PacienteService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -56,8 +58,17 @@ public class PacienteController {
      * @return redireccion al listado
      */
     @PostMapping("/nuevo")
-    public String crear(@ModelAttribute Paciente paciente) {
-        pacienteService.crear(paciente);
+    public String crear(@Valid @ModelAttribute Paciente paciente, BindingResult result, Model model) {
+        if (result.hasErrors()) {
+            model.addAttribute("paciente", paciente);
+            return "paciente/form";
+        }
+        try {
+            pacienteService.crear(paciente);
+        } catch (IllegalArgumentException e) {
+            model.addAttribute("error", e.getMessage());
+            return "paciente/form";
+        }
         return "redirect:/pacientes";
     }
 
@@ -81,13 +92,20 @@ public class PacienteController {
      * @return redireccion al listado
      */
     @PostMapping("/editar/{id}")
-    public String actualizar(@PathVariable Integer id, @ModelAttribute Paciente paciente,
-                             RedirectAttributes redirectAttributes) {
+    public String actualizar(@PathVariable Integer id, @Valid @ModelAttribute Paciente paciente,
+                             BindingResult result, Model model) {
+        if (result.hasErrors()) {
+            paciente.setId(id);
+            model.addAttribute("paciente", paciente);
+            return "paciente/form";
+        }
         try {
             paciente.setId(id);
             pacienteService.actualizar(paciente);
         } catch (IllegalArgumentException e) {
-            redirectAttributes.addFlashAttribute("error", e.getMessage());
+            model.addAttribute("error", e.getMessage());
+            model.addAttribute("paciente", paciente);
+            return "paciente/form";
         }
         return "redirect:/pacientes";
     }
@@ -99,8 +117,12 @@ public class PacienteController {
      * @return redireccion al listado
      */
     @PostMapping("/eliminar/{id}")
-    public String eliminar(@PathVariable Integer id) {
-        pacienteService.eliminar(id);
+    public String eliminar(@PathVariable Integer id, RedirectAttributes redirectAttributes) {
+        try {
+            pacienteService.eliminar(id);
+        } catch (IllegalArgumentException e) {
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+        }
         return "redirect:/pacientes";
     }
 }

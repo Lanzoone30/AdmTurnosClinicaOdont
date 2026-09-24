@@ -1,6 +1,7 @@
 package com.clinicaodontologica.controller;
 
 import com.clinicaodontologica.model.EstadoTurno;
+import com.clinicaodontologica.model.Turno;
 import com.clinicaodontologica.service.OdontologoService;
 import com.clinicaodontologica.service.PacienteService;
 import com.clinicaodontologica.service.TurnoService;
@@ -119,10 +120,14 @@ public class TurnoController {
                         @RequestParam Integer odontologoId,
                         @RequestParam Integer pacienteId,
                         @RequestParam(required = false) EstadoTurno estado,
+                        @RequestParam(required = false) String notaClinica,
                         RedirectAttributes redirectAttributes) {
         try {
-            turnoService.crear(fechaTurno, horaTurno, afeccion, odontologoId, pacienteId,
+            Turno turno = turnoService.crear(fechaTurno, horaTurno, afeccion, odontologoId, pacienteId,
                     estado == null ? EstadoTurno.PENDIENTE : estado);
+            if (notaClinica != null && !notaClinica.isBlank()) {
+                turnoService.registrarNota(turno.getId(), notaClinica);
+            }
         } catch (IllegalArgumentException e) {
             redirectAttributes.addFlashAttribute("error", e.getMessage());
         }
@@ -165,9 +170,13 @@ public class TurnoController {
                              @RequestParam Integer odontologoId,
                              @RequestParam Integer pacienteId,
                              @RequestParam(required = false) EstadoTurno estado,
+                             @RequestParam(required = false) String notaClinica,
                              RedirectAttributes redirectAttributes) {
         try {
             turnoService.actualizar(id, fechaTurno, horaTurno, afeccion, odontologoId, pacienteId, estado);
+            if (notaClinica != null) {
+                turnoService.registrarNota(id, notaClinica);
+            }
         } catch (IllegalArgumentException e) {
             redirectAttributes.addFlashAttribute("error", e.getMessage());
         }
@@ -183,6 +192,49 @@ public class TurnoController {
     @PostMapping("/eliminar/{id}")
     public String eliminar(@PathVariable Integer id) {
         turnoService.eliminar(id);
+        return "redirect:/turnos";
+    }
+
+    /**
+     * Applies a state transition (confirm/cancel/no-show/realize).
+     *
+     * @param id turno id
+     * @param estado target state
+     * @param motivo cancellation reason, required for CANCELADO
+     * @param redirectAttributes flash attributes
+     * @return redirect to the turno list
+     */
+    @PostMapping("/{id}/estado")
+    public String cambiarEstado(@PathVariable Integer id,
+                                @RequestParam EstadoTurno estado,
+                                @RequestParam(required = false) String motivo,
+                                RedirectAttributes redirectAttributes) {
+        try {
+            turnoService.cambiarEstado(id, estado, motivo);
+        } catch (IllegalArgumentException e) {
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+        }
+        return "redirect:/turnos";
+    }
+
+    /**
+     * Saves the clinical note of a turno.
+     *
+     * @param id turno id
+     * @param notaClinica diagnosis and treatment performed
+     * @param redirectAttributes flash attributes
+     * @return redirect to the turno list
+     */
+    @PostMapping("/{id}/nota")
+    public String registrarNota(@PathVariable Integer id,
+                                @RequestParam String notaClinica,
+                                RedirectAttributes redirectAttributes) {
+        try {
+            turnoService.registrarNota(id, notaClinica);
+            redirectAttributes.addFlashAttribute("exito", "Nota clínica guardada.");
+        } catch (IllegalArgumentException e) {
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+        }
         return "redirect:/turnos";
     }
 }

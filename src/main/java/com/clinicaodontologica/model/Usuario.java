@@ -6,6 +6,8 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -32,6 +34,8 @@ public class Usuario implements Serializable {
     @EqualsAndHashCode.Include
     private Integer id;
 
+    @NotBlank
+    @Size(max = 50)
     private String nombreUsuario;
 
     /** Hash BCrypt de la contrasenia. Excluida de toString por seguridad. */

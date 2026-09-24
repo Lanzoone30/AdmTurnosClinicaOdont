@@ -7,5 +7,6 @@ public enum EstadoTurno {
     PENDIENTE,
     CONFIRMADO,
     CANCELADO,
-    REALIZADO
+    REALIZADO,
+    NO_ASISTIO
 }

@@ -1,6 +1,8 @@
 package com.clinicaodontologica.service;
 
+import com.clinicaodontologica.model.DiaSemana;
 import com.clinicaodontologica.model.EstadoTurno;
+import com.clinicaodontologica.model.Horario;
 import com.clinicaodontologica.model.Odontologo;
 import com.clinicaodontologica.model.Paciente;
 import com.clinicaodontologica.model.Turno;
@@ -13,7 +15,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.EnumMap;
+import java.util.EnumSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Servicio de gestion de turnos: CRUD con validacion de choque de horario.
@@ -21,6 +27,22 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class TurnoService {
+
+    /**
+     * Allowed state transitions. Closed states (CANCELADO, REALIZADO,
+     * NO_ASISTIO) are terminal, so a turno cannot be reopened.
+     */
+    private static final Map<EstadoTurno, Set<EstadoTurno>> TRANSICIONES = new EnumMap<>(EstadoTurno.class);
+
+    static {
+        TRANSICIONES.put(EstadoTurno.PENDIENTE,
+                EnumSet.of(EstadoTurno.CONFIRMADO, EstadoTurno.CANCELADO, EstadoTurno.NO_ASISTIO));
+        TRANSICIONES.put(EstadoTurno.CONFIRMADO,
+                EnumSet.of(EstadoTurno.REALIZADO, EstadoTurno.CANCELADO, EstadoTurno.NO_ASISTIO));
+        TRANSICIONES.put(EstadoTurno.CANCELADO, EnumSet.noneOf(EstadoTurno.class));
+        TRANSICIONES.put(EstadoTurno.REALIZADO, EnumSet.noneOf(EstadoTurno.class));
+        TRANSICIONES.put(EstadoTurno.NO_ASISTIO, EnumSet.noneOf(EstadoTurno.class));
+    }
 
     private final TurnoRepository turnoRepository;
     private final OdontologoRepository odontologoRepository;
@@ -200,6 +222,7 @@ public class TurnoService {
         Paciente paciente = pacienteRepository.findById(pacienteId)
                 .orElseThrow(() -> new IllegalArgumentException("Paciente no encontrado: " + pacienteId));
         validarSinChoque(odontologoId, fechaTurno, horaTurno, null);
+        validarDentroDeHorario(odontologo, fechaTurno, horaTurno);
 
         Turno turno = new Turno();
         turno.setFechaTurno(fechaTurno);
@@ -248,13 +271,15 @@ public class TurnoService {
                             EstadoTurno estado) {
         Turno existente = obtener(id);
         validarSinChoque(odontologoId, fechaTurno, horaTurno, id);
+        Odontologo odontologo = odontologoRepository.findById(odontologoId).orElse(null);
+        validarDentroDeHorario(odontologo, fechaTurno, horaTurno);
         existente.setFechaTurno(fechaTurno);
         existente.setHoraTurno(horaTurno);
         existente.setAfeccion(afeccion);
         if (estado != null) {
             existente.setEstado(estado);
         }
-        existente.setOdontologo(odontologoRepository.findById(odontologoId).orElse(null));
+        existente.setOdontologo(odontologo);
         existente.setPaciente(pacienteRepository.findById(pacienteId).orElse(null));
         return turnoRepository.save(existente);
     }
@@ -267,6 +292,80 @@ public class TurnoService {
     @Transactional
     public void eliminar(Integer id) {
         turnoRepository.deleteById(id);
+    }
+
+    /**
+     * Applies a state transition to a turno, enforcing the allowed
+     * transitions and the per-state requirements.
+     *
+     * @param id turno id
+     * @param nuevoEstado target state
+     * @param motivo cancellation reason, required only for CANCELADO
+     * @return the updated turno
+     * @throws IllegalArgumentException if the transition is not allowed or a
+     *         required value is missing
+     */
+    @Transactional
+    public Turno cambiarEstado(Integer id, EstadoTurno nuevoEstado, String motivo) {
+        Turno turno = obtener(id);
+        if (nuevoEstado == null) {
+            throw new IllegalArgumentException("El estado es obligatorio");
+        }
+        Set<EstadoTurno> permitidos = TRANSICIONES.getOrDefault(turno.getEstado(), EnumSet.noneOf(EstadoTurno.class));
+        if (!permitidos.contains(nuevoEstado)) {
+            throw new IllegalArgumentException(
+                    "No se puede pasar de " + turno.getEstado() + " a " + nuevoEstado);
+        }
+        if (nuevoEstado == EstadoTurno.CANCELADO) {
+            if (motivo == null || motivo.isBlank()) {
+                throw new IllegalArgumentException("El motivo de cancelacion es obligatorio");
+            }
+            turno.setMotivoCancelacion(motivo.trim());
+        }
+        if (nuevoEstado == EstadoTurno.REALIZADO
+                && (turno.getNotaClinica() == null || turno.getNotaClinica().isBlank())) {
+            throw new IllegalArgumentException("La nota clinica es obligatoria para marcar el turno como realizado");
+        }
+        turno.setEstado(nuevoEstado);
+        return turnoRepository.save(turno);
+    }
+
+    /**
+     * Saves the clinical note for a turno.
+     *
+     * @param id turno id
+     * @param notaClinica diagnosis and treatment performed
+     * @return the updated turno
+     */
+    @Transactional
+    public Turno registrarNota(Integer id, String notaClinica) {
+        Turno turno = obtener(id);
+        turno.setNotaClinica(notaClinica == null ? null : notaClinica.trim());
+        return turnoRepository.save(turno);
+    }
+
+    /**
+     * Rejects a turno that falls outside the dentist's availability for that
+     * weekday. Dentists without configured hours are unconstrained.
+     *
+     * @throws IllegalArgumentException if the turno is outside the schedule
+     */
+    private void validarDentroDeHorario(Odontologo odontologo, LocalDate fecha, LocalTime hora) {
+        if (odontologo == null || odontologo.getHorarios() == null
+                || odontologo.getHorarios().isEmpty()) {
+            return;
+        }
+        DiaSemana dia = DiaSemana.from(fecha.getDayOfWeek());
+        for (Horario horario : odontologo.getHorarios()) {
+            if (dia.equals(horario.getDiaSemana())
+                    && horario.getHorarioInicio() != null && horario.getHorarioFin() != null
+                    && !hora.isBefore(horario.getHorarioInicio())
+                    && !hora.isAfter(horario.getHorarioFin())) {
+                return;
+            }
+        }
+        throw new IllegalArgumentException(
+                "El odontologo no atiende el " + dia + " a las " + hora);
     }
 
     /**
