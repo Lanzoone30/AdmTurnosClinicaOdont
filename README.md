@@ -2,6 +2,14 @@
 
 Sistema web de administración de turnos para una clínica odontológica. Registra pacientes y odontólogos, asigna turnos y gestiona los usuarios del sistema.
 
+## Funcionalidades
+- **Historia clínica mínima del paciente**: alergias, antecedentes y medicación. Las alergias se destacan en el listado de pacientes y al asignar un turno.
+- **Registro clínico del turno**: nota clínica (diagnóstico y tratamiento). Obligatoria al marcar el turno como `REALIZADO`.
+- **Ciclo de vida del turno**: `PENDIENTE → CONFIRMADO → REALIZADO`, con `CANCELADO` y `NO_ASISTIO` como estados finales. Cancelar exige un motivo.
+- **Horario de atención del odontólogo**: una franja por día de la semana; los turnos fuera del horario se rechazan.
+- **Validación de formularios**: los errores se muestran junto al campo sin perder lo cargado.
+- **Integridad al borrar**: no se elimina un paciente con turnos, un odontólogo con turnos o usuario, ni un usuario referenciado por un odontólogo.
+
 ## Tecnologías
 
 | Capa | Tecnología |
