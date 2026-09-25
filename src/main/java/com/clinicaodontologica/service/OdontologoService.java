@@ -22,6 +22,7 @@ public class OdontologoService {
 
     private final OdontologoRepository odontologoRepository;
     private final TurnoRepository turnoRepository;
+    private final Mensajes mensajes;
 
     /**
      * Builds a fixed seven-row weekly schedule for the form, reusing any
@@ -97,7 +98,7 @@ public class OdontologoService {
     @Transactional(readOnly = true)
     public Odontologo obtener(Integer id) {
         return odontologoRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Odontologo no encontrado: " + id));
+                .orElseThrow(() -> new IllegalArgumentException(mensajes.get("error.odontologo.no-encontrado", id)));
     }
 
     /**
@@ -144,12 +145,12 @@ public class OdontologoService {
     public void eliminar(Integer id) {
         if (turnoRepository.existsByOdontologoId(id)) {
             throw new IllegalArgumentException(
-                    "No se puede eliminar el odontologo: tiene turnos registrados");
+                    mensajes.get("error.odontologo.eliminar-con-turnos"));
         }
         Odontologo odontologo = obtener(id);
         if (odontologo.getUsuario() != null) {
             throw new IllegalArgumentException(
-                    "No se puede eliminar el odontologo: tiene un usuario asociado");
+                    mensajes.get("error.odontologo.eliminar-con-usuario"));
         }
         odontologoRepository.deleteById(id);
     }
