@@ -1,35 +1,35 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="es">
-<head th:replace="~{fragments/layout :: head('Ingresar')}"></head>
+<html xmlns:th="http://www.thymeleaf.org" th:lang="${idiomaActual}" lang="es">
+<head th:replace="~{fragments/layout :: head(#{login.ingresar})}"></head>
 
 <body class="login-page">
 
     <main class="login-card">
         <div class="login-brand">
-            <span class="brand-icon"><i class="fas fa-tooth"></i></span>
-            <h1>Consultorio Odontológico</h1>
-            <p>Sistema de Administración de Turnos</p>
+            <span class="brand-icon"><i class="fas fa-tooth" aria-hidden="true"></i></span>
+            <h1 th:text="#{app.brand}">Consultorio Odontológico</h1>
+            <p th:text="#{login.subtitulo}">Sistema de Administración de Turnos</p>
         </div>
 
         <div th:if="${param.error}" class="alert alert-error" role="alert">
-            <i class="fas fa-exclamation-circle"></i>
-            <span>Usuario o contraseña incorrectos.</span>
+            <i class="fas fa-exclamation-circle" aria-hidden="true"></i>
+            <span th:text="#{login.error}">Usuario o contraseña incorrectos.</span>
         </div>
 
         <form th:action="@{/login}" method="post">
             <div class="field">
-                <label class="field-label" for="username">Usuario</label>
+                <label class="field-label" for="username" th:text="#{login.usuario}">Usuario</label>
                 <input class="input" type="text" id="username" name="username"
-                    placeholder="Ingrese su usuario" autocomplete="username" autofocus required>
+                    th:placeholder="#{login.placeholder.usuario}" autocomplete="username" autofocus required>
             </div>
 
             <div class="field">
-                <label class="field-label" for="password">Contraseña</label>
+                <label class="field-label" for="password" th:text="#{login.password}">Contraseña</label>
                 <input class="input" type="password" id="password" name="password"
-                    placeholder="Ingrese su contraseña" autocomplete="current-password" required>
+                    th:placeholder="#{login.placeholder.password}" autocomplete="current-password" required>
             </div>
 
-            <button class="btn btn-primary btn-block" type="submit">Ingresar</button>
+            <button class="btn btn-primary btn-block" type="submit" th:text="#{login.ingresar}">Ingresar</button>
         </form>
     </main>
 
