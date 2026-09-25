@@ -6,8 +6,17 @@
   background: var(--surface);
   border-radius: var(--radius);
   box-shadow: var(--shadow-sm);
-  border: 1px solid rgba(228, 231, 240, 0.6);
+  border: 1px solid var(--border);
   overflow: hidden;
+}
+
+.section-title {
+  margin: var(--space-section) 0 var(--space-group);
+  font-size: 15px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
 }
 
 .panel-header {
@@ -47,12 +56,19 @@
 }
 
 .alert-error {
-  background: #fdf0ef;
-  color: #b3382c;
-  border: 1px solid #f5c6c1;
+  background: var(--badge-red-bg);
+  color: var(--badge-red-fg);
+  border: 1px solid var(--danger);
 }
 
-.alert-error .alert-close {
+.alert-success {
+  background: var(--badge-green-bg);
+  color: var(--badge-green-fg);
+  border: 1px solid var(--success);
+}
+
+.alert-error .alert-close,
+.alert-success .alert-close {
   margin-left: auto;
   background: none;
   border: 0;
