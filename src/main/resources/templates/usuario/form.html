@@ -1,18 +1,23 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="es">
-<head th:replace="~{fragments/layout :: head('Usuarios')}"></head>
+<html xmlns:th="http://www.thymeleaf.org" th:lang="${idiomaActual}" lang="es">
+<head th:replace="~{fragments/layout :: head(#{usuario.titulo.alta})}"></head>
 
 <body class="app">
 
+    <a class="skip-link" href="#main" th:text="#{a11y.saltar-contenido}">Saltar al contenido principal</a>
+
     <aside th:replace="~{fragments/layout :: sidebar}"></aside>
+
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
     <div class="app-main">
         <header th:replace="~{fragments/layout :: topbar}"></header>
 
-        <main class="app-content">
-            <h1 class="page-title" th:text="${usuario.id == null ? 'Alta Usuarios' : 'Edición de Usuario'}">
+        <main class="app-content" id="main">
+            <h1 class="page-title"
+                th:text="${usuario.id == null ? #messages.msg('usuario.titulo.alta') : #messages.msg('usuario.titulo.edicion')}">
                 Alta Usuarios</h1>
-            <p class="page-subtitle">Complete los datos del usuario del sistema.</p>
+            <p class="page-subtitle" th:text="#{usuario.subtitulo.alta}">Complete los datos del usuario del sistema.</p>
 
             <div class="panel">
                 <div class="panel-body">
@@ -21,22 +26,24 @@
                         method="post">
                         <div class="form-grid">
                             <div class="field">
-                                <label class="field-label" for="nombreUsuario">Nombre de usuario</label>
+                                <label class="field-label" for="nombreUsuario" th:text="#{common.nombre-usuario}">Nombre de usuario</label>
                                 <input class="input" type="text" id="nombreUsuario" name="nombreUsuario"
-                                    th:value="*{nombreUsuario}" placeholder="Nombre de usuario" required>
+                                    th:value="*{nombreUsuario}" th:placeholder="#{common.nombre-usuario}" placeholder="Nombre de usuario" required
+                                    th:attr="aria-describedby=${#fields.hasErrors('nombreUsuario')} ? 'error-nombreUsuario' : null,
+                                        aria-invalid=${#fields.hasErrors('nombreUsuario')} ? 'true' : null">
                                 <p th:replace="~{fragments/layout :: fieldError('nombreUsuario')}"></p>
                             </div>
                             <div class="field">
-                                <label class="field-label" for="contrasenia">Contraseña</label>
+                                <label class="field-label" for="contrasenia" th:text="#{usuario.password}">Contraseña</label>
                                 <input class="input" type="password" id="contrasenia" name="contrasenia"
-                                    placeholder="Contraseña" required>
+                                    th:placeholder="#{usuario.password}" placeholder="Contraseña" required>
                                 <small class="field-hint"
-                                    th:if="${usuario.id != null}">Deje vacío para conservar la contraseña actual.</small>
+                                    th:if="${usuario.id != null}" th:text="#{usuario.password.help}">Deje vacío para conservar la contraseña actual.</small>
                             </div>
                             <div class="field">
-                                <label class="field-label" for="rol">Rol</label>
+                                <label class="field-label" for="rol" th:text="#{usuario.rol}">Rol</label>
                                 <select class="input" id="rol" name="rol" required>
-                                    <option value="" th:selected="${usuario.rol == null}" disabled>Seleccione un rol</option>
+                                    <option value="" th:selected="${usuario.rol == null}" disabled th:text="#{usuario.seleccione-rol}">Seleccione un rol</option>
                                     <option th:each="r : ${roles}" th:value="${r.name()}"
                                         th:text="${r.name()}" th:selected="${usuario.rol != null && usuario.rol.name() == r.name()}">
                                     </option>
@@ -46,10 +53,10 @@
 
                         <div class="actions mt-24">
                             <button class="btn btn-primary" type="submit"
-                                th:text="${usuario.id == null ? 'Crear Usuario' : 'Guardar Modificación'}">
+                                th:text="${usuario.id == null ? #messages.msg('usuario.crear') : #messages.msg('common.guardar-cambios')}">
                                 Crear Usuario
                             </button>
-                            <a class="btn btn-ghost" th:href="@{/usuarios}">Cancelar</a>
+                            <a class="btn btn-ghost" th:href="@{/usuarios}" th:text="#{common.cancelar}">Cancelar</a>
                         </div>
                     </form>
                 </div>
