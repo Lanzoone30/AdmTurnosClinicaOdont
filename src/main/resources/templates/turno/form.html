@@ -1,18 +1,23 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="es">
-<head th:replace="~{fragments/layout :: head('Turnos')}"></head>
+<html xmlns:th="http://www.thymeleaf.org" th:lang="${idiomaActual}" lang="es">
+<head th:replace="~{fragments/layout :: head(#{turno.titulo.alta})}"></head>
 
 <body class="app">
 
+    <a class="skip-link" href="#main" th:text="#{a11y.saltar-contenido}">Saltar al contenido principal</a>
+
     <aside th:replace="~{fragments/layout :: sidebar}"></aside>
+
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
     <div class="app-main">
         <header th:replace="~{fragments/layout :: topbar}"></header>
 
-        <main class="app-content">
-            <h1 class="page-title" th:text="${turno != null ? 'Edición de Turno' : 'Alta Turnos'}">
+        <main class="app-content" id="main">
+            <h1 class="page-title"
+                th:text="${turno != null ? #messages.msg('turno.titulo.edicion') : #messages.msg('turno.titulo.alta')}">
                 Alta Turnos</h1>
-            <p class="page-subtitle">Asigne un turno seleccionando el odontólogo y el paciente.</p>
+            <p class="page-subtitle" th:text="#{turno.asignar}">Asigne un turno seleccionando el odontólogo y el paciente.</p>
 
             <div class="panel">
                 <div class="panel-body">
@@ -20,27 +25,27 @@
                         method="post">
                         <div class="form-grid">
                             <div class="field">
-                                <label class="field-label" for="afeccion">Afección</label>
+                                <label class="field-label" for="afeccion" th:text="#{turno.afeccion}">Afección</label>
                                 <input class="input" type="text" id="afeccion" name="afeccion"
                                     th:value="${turno != null ? turno.afeccion : ''}"
-                                    placeholder="Ej: Dolor de muelas">
+                                    th:placeholder="#{turno.placeholder.afeccion}" placeholder="Ej: Dolor de muelas">
                             </div>
                             <div class="field">
-                                <label class="field-label" for="fechaTurno">Fecha</label>
+                                <label class="field-label" for="fechaTurno" th:text="#{turno.fecha}">Fecha</label>
                                 <input class="input" type="date" id="fechaTurno" name="fechaTurno"
                                     th:value="${turno != null ? #temporals.format(turno.fechaTurno, 'yyyy-MM-dd') : ''}"
                                     required>
                             </div>
                             <div class="field">
-                                <label class="field-label" for="horaTurno">Hora</label>
+                                <label class="field-label" for="horaTurno" th:text="#{turno.hora}">Hora</label>
                                 <input class="input" type="time" id="horaTurno" name="horaTurno"
                                     th:value="${turno != null ? #temporals.format(turno.horaTurno, 'HH:mm') : ''}"
                                     required>
                             </div>
                             <div class="field">
-                                <label class="field-label" for="odontologoId">Odontólogo</label>
+                                <label class="field-label" for="odontologoId" th:text="#{turno.odontologo}">Odontólogo</label>
                                 <select class="select" id="odontologoId" name="odontologoId" required>
-                                    <option value="">Seleccionar odontólogo</option>
+                                    <option value="" th:text="#{turno.seleccionar-odontologo}">Seleccionar odontólogo</option>
                                     <option th:each="odontologo : ${odontologos}"
                                         th:value="${odontologo.id}"
                                         th:text="${odontologo.nombre + ' ' + odontologo.apellido}"
@@ -50,45 +55,45 @@
                                 </select>
                             </div>
                             <div class="field">
-                                <label class="field-label" for="pacienteId">Paciente</label>
+                                <label class="field-label" for="pacienteId" th:text="#{turno.paciente}">Paciente</label>
                                 <select class="select" id="pacienteId" name="pacienteId" required>
-                                    <option value="">Seleccionar paciente</option>
+                                    <option value="" th:text="#{turno.seleccionar-paciente}">Seleccionar paciente</option>
                                     <option th:each="paciente : ${pacientes}"
                                         th:value="${paciente.id}"
                                         th:text="${paciente.nombre + ' ' + paciente.apellido}"
-                                        th:attr="data-alergias=${paciente.alergias != null and !paciente.alergias.isBlank()} ? 'Alergias: ' + ${paciente.alergias} : ''"
+                                        th:attr="data-alergias=${paciente.alergias != null and !paciente.alergias.isBlank() ? #messages.msg('paciente.alergias') + ': ' + paciente.alergias : ''}"
                                         th:selected="${turno != null && turno.paciente != null && turno.paciente.id == paciente.id}">
                                         Paciente
                                     </option>
                                 </select>
                                 <p class="text-muted turno-alergias" id="alergiasPaciente"
-                                    th:text="${turno != null && turno.paciente != null && turno.paciente.alergias != null and !turno.paciente.alergias.isBlank()} ? 'Alergias: ' + ${turno.paciente.alergias} : ''"
+                                    th:text="${turno != null && turno.paciente != null && turno.paciente.alergias != null and !turno.paciente.alergias.isBlank() ? #messages.msg('paciente.alergias') + ': ' + turno.paciente.alergias : ''}"
                                     th:hidden="${turno == null or turno.paciente == null or turno.paciente.alergias == null or turno.paciente.alergias.isBlank()}">Alergias</p>
                             </div>
                             <div class="field">
-                                <label class="field-label" for="estado">Estado</label>
+                                <label class="field-label" for="estado" th:text="#{turno.estado}">Estado</label>
                                 <select class="select" id="estado" name="estado">
                                     <option th:each="e : ${estados}" th:value="${e.name()}"
-                                        th:text="${e.name()}"
+                                        th:text="${#messages.msg('estado.' + #strings.replace(e.name().toLowerCase(), '_', '-'))}"
                                         th:selected="${turno != null && turno.estado != null && turno.estado.name() == e.name()}">
                                         Estado
                                     </option>
                                 </select>
                             </div>
                             <div class="field field-full">
-                                <label class="field-label" for="notaClinica">Nota clínica</label>
+                                <label class="field-label" for="notaClinica" th:text="#{turno.nota-clinica}">Nota clínica</label>
                                 <textarea class="input" id="notaClinica" name="notaClinica" rows="4"
-                                    placeholder="Diagnóstico y tratamiento realizado"
+                                    th:placeholder="#{clinico.diagnostico}" placeholder="Diagnóstico y tratamiento realizado"
                                     th:text="${turno != null ? turno.notaClinica : ''}"></textarea>
                             </div>
                         </div>
 
                         <div class="actions mt-24">
                             <button class="btn btn-primary" type="submit"
-                                th:text="${turno != null ? 'Guardar Modificación' : 'Crear Turno'}">
+                                th:text="${turno != null ? #messages.msg('common.guardar-cambios') : #messages.msg('turno.crear')}">
                                 Crear Turno
                             </button>
-                            <a class="btn btn-ghost" th:href="@{/turnos}">Cancelar</a>
+                            <a class="btn btn-ghost" th:href="@{/turnos}" th:text="#{common.cancelar}">Cancelar</a>
                         </div>
                     </form>
                 </div>
