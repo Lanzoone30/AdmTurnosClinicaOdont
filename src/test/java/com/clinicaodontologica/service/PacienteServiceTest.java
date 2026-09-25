@@ -32,6 +32,9 @@ class PacienteServiceTest {
     @Mock
     private TurnoRepository turnoRepository;
 
+    @org.mockito.Spy
+    private Mensajes mensajes = new MensajesEco();
+
     @InjectMocks
     private PacienteService pacienteService;
 
@@ -68,7 +71,7 @@ class PacienteServiceTest {
         // when/then
         assertThatThrownBy(() -> pacienteService.crear(nuevo))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("Ya existe un paciente");
+                .hasMessageContaining("error.paciente.dni-duplicado");
 
         then(pacienteRepository).should(never()).save(org.mockito.ArgumentMatchers.any(Paciente.class));
     }
@@ -149,7 +152,7 @@ class PacienteServiceTest {
         // when/then
         assertThatThrownBy(() -> pacienteService.eliminar(5))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("turnos registrados");
+                .hasMessageContaining("error.paciente.eliminar-con-turnos");
 
         then(pacienteRepository).should(never()).deleteById(5);
     }
