@@ -13,8 +13,11 @@ import org.springframework.security.web.SecurityFilterChain;
  * el resto de rutas requiere autenticacion. Las contrasenias se hashean
  * con BCrypt.
  *
- * <p>Roles: ADMIN puede todo; ODONTOLOGO ve turnos/pacientes; SECRETARIO
- * ve pacientes/odontologos/turnos.</p>
+ * <p>Roles: ADMIN ve gestion, usuarios y auditoria; ODONTOLOGO ve
+ * turnos/pacientes y su agenda; SECRETARIO ve pacientes/odontologos/turnos;
+ * PACIENTE solo sus turnos. Los portales personales
+ * ({@code /turnos/mis-turnos}, {@code /turnos/mi-agenda}) son exclusivos del
+ * rol que los posee.</p>
  */
 @Configuration
 @EnableWebSecurity
@@ -31,12 +34,12 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/login", "/css/**", "/js/**", "/img/**", "/vendor/**", "/scss/**")
+                .requestMatchers("/login", "/idioma", "/css/**", "/js/**", "/img/**", "/vendor/**", "/scss/**")
                     .permitAll()
                 .requestMatchers("/usuarios/**").hasRole("ADMIN")
                 .requestMatchers("/auditoria/**").hasRole("ADMIN")
-                .requestMatchers("/turnos/mis-turnos").hasAnyRole("PACIENTE", "ADMIN")
-                .requestMatchers("/turnos/mi-agenda").hasAnyRole("ODONTOLOGO", "ADMIN")
+                .requestMatchers("/turnos/mis-turnos").hasRole("PACIENTE")
+                .requestMatchers("/turnos/mi-agenda").hasRole("ODONTOLOGO")
                 .requestMatchers("/pacientes/**").hasAnyRole("ADMIN", "ODONTOLOGO", "SECRETARIO")
                 .requestMatchers("/odontologos/**").hasAnyRole("ADMIN", "SECRETARIO")
                 .requestMatchers("/turnos/**").hasAnyRole("ADMIN", "ODONTOLOGO", "SECRETARIO")
