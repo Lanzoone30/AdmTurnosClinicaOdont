@@ -2,6 +2,7 @@ package com.clinicaodontologica.controller;
 
 import com.clinicaodontologica.model.EstadoTurno;
 import com.clinicaodontologica.model.Turno;
+import com.clinicaodontologica.service.Mensajes;
 import com.clinicaodontologica.service.OdontologoService;
 import com.clinicaodontologica.service.PacienteService;
 import com.clinicaodontologica.service.TurnoService;
@@ -30,6 +31,7 @@ public class TurnoController {
     private final TurnoService turnoService;
     private final OdontologoService odontologoService;
     private final PacienteService pacienteService;
+    private final Mensajes mensajes;
 
     /**
      * Lista los turnos.
@@ -62,8 +64,12 @@ public class TurnoController {
      */
     @GetMapping("/mis-turnos")
     public String misTurnos(Authentication authentication, Model model) {
-        model.addAttribute("turnos", turnoService.listarPorPacienteLogueado(authentication.getName()));
-        return "turno/mis-turnos";
+        try {
+            model.addAttribute("turnos", turnoService.listarPorPacienteLogueado(authentication.getName()));
+            return "turno/mis-turnos";
+        } catch (IllegalArgumentException e) {
+            return avisoSinVinculo(e, model);
+        }
     }
 
     /**
@@ -80,11 +86,28 @@ public class TurnoController {
                            Model model) {
         LocalDate desde = inicio == null ? LocalDate.now() : inicio;
         LocalDate hasta = desde.plusDays(6);
-        model.addAttribute("turnos", turnoService.listarAgendaOdontologoLogueado(
-                authentication.getName(), desde, hasta));
+        try {
+            model.addAttribute("turnos", turnoService.listarAgendaOdontologoLogueado(
+                    authentication.getName(), desde, hasta));
+        } catch (IllegalArgumentException e) {
+            return avisoSinVinculo(e, model);
+        }
         model.addAttribute("desde", desde);
         model.addAttribute("hasta", hasta);
         return "turno/mi-agenda";
+    }
+
+    /**
+     * Prepara la vista de error para una cuenta sin ficha vinculada.
+     *
+     * @param e excepcion con el mensaje ya localizado por {@link Mensajes}
+     * @param model modelo de la vista
+     * @return vista de error
+     */
+    private String avisoSinVinculo(IllegalArgumentException e, Model model) {
+        model.addAttribute("errorTitulo", mensajes.get("error.titulo"));
+        model.addAttribute("errorTexto", e.getMessage());
+        return "error";
     }
 
     /**
