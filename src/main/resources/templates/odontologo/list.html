@@ -1,53 +1,58 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="es">
-<head th:replace="~{fragments/layout :: head('Ver Odontólogos')}"></head>
+<html xmlns:th="http://www.thymeleaf.org" th:lang="${idiomaActual}" lang="es">
+<head th:replace="~{fragments/layout :: head(#{odontologo.titulo.ver})}"></head>
 
 <body class="app">
 
+    <a class="skip-link" href="#main" th:text="#{a11y.saltar-contenido}">Saltar al contenido principal</a>
+
     <aside th:replace="~{fragments/layout :: sidebar}"></aside>
+
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
     <div class="app-main">
         <header th:replace="~{fragments/layout :: topbar}"></header>
 
-        <main class="app-content">
-            <h1 class="page-title">Ver Odontólogos</h1>
-            <p class="page-subtitle">A continuación podrá visualizar la lista completa de odontólogos.</p>
+        <main class="app-content" id="main">
+            <h1 class="page-title" th:text="#{odontologo.titulo.ver}">Ver Odontólogos</h1>
+            <p class="page-subtitle" th:text="#{odontologo.subtitulo.ver}">A continuación podrá visualizar la lista completa de odontólogos.</p>
 
             <div th:if="${error}" class="alert alert-error" role="alert">
-                <i class="fas fa-exclamation-circle"></i>
+                <i class="fas fa-exclamation-circle" aria-hidden="true"></i>
                 <span th:text="${error}">Error</span>
-                <button class="alert-close" type="button" aria-label="Cerrar">&times;</button>
+                <button class="alert-close" type="button" th:aria-label="#{common.cerrar-alerta}" aria-label="Cerrar">&times;</button>
             </div>
 
             <div class="panel">
                 <div class="panel-header">
-                    <h2 class="panel-title">Odontólogos</h2>
+                    <h2 class="panel-title" th:text="#{nav.odontologos}">Odontólogos</h2>
                     <a class="btn btn-primary" th:href="@{/odontologos/nuevo}">
-                        <i class="fas fa-plus"></i>
-                        Nuevo Odontólogo
+                        <i class="fas fa-plus" aria-hidden="true"></i>
+                        <span th:text="#{odontologo.nuevo}">Nuevo Odontólogo</span>
                     </a>
                 </div>
                 <div class="panel-body">
                     <form class="toolbar" th:action="@{/odontologos}" method="get">
                         <input class="input" type="text" name="busqueda" th:value="${busqueda}"
-                            placeholder="Buscar por nombre o apellido">
+                            th:placeholder="#{odontologo.buscar-placeholder}" placeholder="Buscar por nombre o apellido">
                         <button class="btn btn-ghost" type="submit">
-                            <i class="fas fa-search"></i>
-                            Buscar
+                            <i class="fas fa-search" aria-hidden="true"></i>
+                            <span th:text="#{common.buscar}">Buscar</span>
                         </button>
                     </form>
 
-                    <div class="table-wrap">
+                    <div class="table-wrap" role="region" th:aria-label="#{odontologo.listado}" aria-label="Listado de odontólogos" tabindex="0">
                         <table class="table">
+<caption th:text="#{odontologo.listado}">Listado de odontólogos</caption>
                             <thead>
                                 <tr>
-                                    <th>Id</th>
-                                    <th>DNI</th>
-                                    <th>Nombre</th>
-                                    <th>Apellido</th>
-                                    <th>Teléfono</th>
-                                    <th>Especialidad</th>
-                                    <th class="text-right">Acción</th>
+                                    <th scope="col" th:text="#{common.id}">Id</th>
+                                    <th scope="col" th:text="#{common.dni}">DNI</th>
+                                    <th scope="col" th:text="#{common.nombre}">Nombre</th>
+                                    <th scope="col" th:text="#{common.apellido}">Apellido</th>
+                                    <th scope="col" th:text="#{common.telefono}">Teléfono</th>
+                                    <th scope="col" th:text="#{odontologo.especialidad}">Especialidad</th>
+                                    <th scope="col" class="text-right" th:text="#{common.accion}">Acción</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -64,16 +69,16 @@
                                         <div class="actions text-right">
                                             <a class="btn-icon btn-icon-edit"
                                                 th:href="@{/odontologos/editar/{id}(id=${odontologo.id})}"
-                                                title="Editar">
-                                                <i class="fas fa-pen"></i>
+                                                th:title="#{common.editar}" th:aria-label="#{common.editar}" title="Editar" aria-label="Editar">
+                                                <i class="fas fa-pen" aria-hidden="true"></i>
                                             </a>
                                             <form class="inline-form"
                                                 th:action="@{/odontologos/eliminar/{id}(id=${odontologo.id})}"
                                                 method="post"
-                                                data-confirm="¿Eliminar al odontólogo?">
+                                                th:attr="data-confirm=#{common.confirmar-eliminar-odontologo}">
                                                 <button class="btn-icon btn-icon-delete" type="submit"
-                                                    title="Eliminar">
-                                                    <i class="fas fa-trash"></i>
+                                                    th:title="#{common.eliminar}" th:aria-label="#{common.eliminar}" title="Eliminar" aria-label="Eliminar">
+                                                    <i class="fas fa-trash" aria-hidden="true"></i>
                                                 </button>
                                             </form>
                                         </div>
@@ -83,7 +88,9 @@
                         </table>
                     </div>
                     <div th:if="${odontologos.isEmpty()}" class="empty-state">
-                        <p>No hay odontólogos registrados.</p>
+                        <i class="fas fa-user-md empty-icon" aria-hidden="true"></i>
+                        <p th:text="#{odontologo.sin-registros}">No hay odontólogos registrados.</p>
+                        <a class="btn btn-primary btn-sm" th:href="@{/odontologos/nuevo}" th:text="#{odontologo.alta}">Alta de odontólogo</a>
                     </div>
                 </div>
             </div>
