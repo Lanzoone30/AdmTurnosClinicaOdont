@@ -1,33 +1,39 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="es">
-<head th:replace="~{fragments/layout :: head('Mis Turnos')}"></head>
+<html xmlns:th="http://www.thymeleaf.org" th:lang="${idiomaActual}" lang="es">
+<head th:replace="~{fragments/layout :: head(#{mis-turnos.titulo})}"></head>
 
 <body class="app">
 
+    <a class="skip-link" href="#main" th:text="#{a11y.saltar-contenido}">Saltar al contenido principal</a>
+
     <aside th:replace="~{fragments/layout :: sidebar}"></aside>
+
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
     <div class="app-main">
         <header th:replace="~{fragments/layout :: topbar}"></header>
 
-        <main class="app-content">
-            <h1 class="page-title">Mis Turnos</h1>
-            <p class="page-subtitle">Historial de sus turnos en la clínica.</p>
+        <main class="app-content" id="main">
+            <h1 class="page-title" th:text="#{mis-turnos.titulo}">Mis Turnos</h1>
+            <p class="page-subtitle" th:text="#{mis-turnos.subtitulo}">Historial de sus turnos en la clínica.</p>
 
             <div class="panel">
                 <div class="panel-body">
                     <div th:if="${turnos.isEmpty()}" class="empty-state">
-                        <p>No tiene turnos registrados.</p>
+                        <i class="fas fa-calendar-times empty-icon" aria-hidden="true"></i>
+                        <p th:text="#{mis-turnos.sin-registros}">No tiene turnos registrados.</p>
                     </div>
-                    <div class="table-wrap" th:unless="${turnos.isEmpty()}">
+                    <div class="table-wrap" role="region" th:aria-label="#{mis-turnos.titulo}" aria-label="Mis turnos" tabindex="0" th:unless="${turnos.isEmpty()}">
                         <table class="table">
+<caption th:text="#{mis-turnos.titulo}">Mis turnos</caption>
                             <thead>
                                 <tr>
-                                    <th>Fecha</th>
-                                    <th>Hora</th>
-                                    <th>Odontólogo</th>
-                                    <th>Afección</th>
-                                    <th>Estado</th>
-                                    <th>Nota clínica</th>
+                                    <th scope="col" th:text="#{turno.fecha}">Fecha</th>
+                                    <th scope="col" th:text="#{turno.hora}">Hora</th>
+                                    <th scope="col" th:text="#{turno.odontologo}">Odontólogo</th>
+                                    <th scope="col" th:text="#{turno.afeccion}">Afección</th>
+                                    <th scope="col" th:text="#{turno.estado}">Estado</th>
+                                    <th scope="col" th:text="#{turno.nota-clinica}">Nota clínica</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -38,9 +44,9 @@
                                     <td th:text="${turno.afeccion}">afeccion</td>
                                     <td>
                                         <span class="badge" th:classappend="'badge-' + ${#strings.toLowerCase(turno.estado.name())}"
-                                            th:text="${turno.estado.name()}">estado</span>
+                                            th:text="${#messages.msg('estado.' + #strings.replace(turno.estado.name().toLowerCase(), '_', '-'))}">estado</span>
                                     </td>
-                                    <td th:text="${turno.notaClinica != null and !turno.notaClinica.isBlank()} ? ${turno.notaClinica} : '—'">—</td>
+                                    <td th:text="${turno.notaClinica != null and !turno.notaClinica.isBlank()} ? ${turno.notaClinica} : '-'">-</td>
                                 </tr>
                             </tbody>
                         </table>
