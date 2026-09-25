@@ -1,32 +1,38 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="es">
-<head th:replace="~{fragments/layout :: head('Auditoría')}"></head>
+<html xmlns:th="http://www.thymeleaf.org" th:lang="${idiomaActual}" lang="es">
+<head th:replace="~{fragments/layout :: head(#{auditoria.titulo})}"></head>
 
 <body class="app">
 
+    <a class="skip-link" href="#main" th:text="#{a11y.saltar-contenido}">Saltar al contenido principal</a>
+
     <aside th:replace="~{fragments/layout :: sidebar}"></aside>
+
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
     <div class="app-main">
         <header th:replace="~{fragments/layout :: topbar}"></header>
 
-        <main class="app-content">
-            <h1 class="page-title">Auditoría</h1>
-            <p class="page-subtitle">Registro de operaciones realizadas en el sistema.</p>
+        <main class="app-content" id="main">
+            <h1 class="page-title" th:text="#{auditoria.titulo}">Auditoría</h1>
+            <p class="page-subtitle" th:text="#{auditoria.subtitulo}">Registro de operaciones realizadas en el sistema.</p>
 
             <div class="panel">
                 <div class="panel-body">
                     <div th:if="${registros.isEmpty()}" class="empty-state">
-                        <p>No hay registros de auditoría todavía.</p>
+                        <i class="fas fa-history empty-icon" aria-hidden="true"></i>
+                        <p th:text="#{auditoria.sin-registros}">No hay registros de auditoría todavía.</p>
                     </div>
-                    <div class="table-wrap" th:unless="${registros.isEmpty()}">
+                    <div class="table-wrap" role="region" th:aria-label="#{auditoria.registro}" aria-label="Registro de auditoría" tabindex="0" th:unless="${registros.isEmpty()}">
                         <table class="table">
+<caption th:text="#{auditoria.registro}">Registro de auditoría</caption>
                             <thead>
                                 <tr>
-                                    <th>Fecha</th>
-                                    <th>Usuario</th>
-                                    <th>Entidad</th>
-                                    <th>Acción</th>
-                                    <th>Detalle</th>
+                                    <th scope="col" th:text="#{auditoria.col.fecha}">Fecha</th>
+                                    <th scope="col" th:text="#{auditoria.col.usuario}">Usuario</th>
+                                    <th scope="col" th:text="#{auditoria.col.entidad}">Entidad</th>
+                                    <th scope="col" th:text="#{auditoria.col.accion}">Acción</th>
+                                    <th scope="col" th:text="#{auditoria.col.detalle}">Detalle</th>
                                 </tr>
                             </thead>
                             <tbody>
