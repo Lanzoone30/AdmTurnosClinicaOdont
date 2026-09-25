@@ -1,18 +1,23 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="es">
-<head th:replace="~{fragments/layout :: head('Pacientes')}"></head>
+<html xmlns:th="http://www.thymeleaf.org" th:lang="${idiomaActual}" lang="es">
+<head th:replace="~{fragments/layout :: head(#{paciente.titulo.alta})}"></head>
 
 <body class="app">
 
+    <a class="skip-link" href="#main" th:text="#{a11y.saltar-contenido}">Saltar al contenido principal</a>
+
     <aside th:replace="~{fragments/layout :: sidebar}"></aside>
+
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
     <div class="app-main">
         <header th:replace="~{fragments/layout :: topbar}"></header>
 
-        <main class="app-content">
-            <h1 class="page-title" th:text="${paciente.id == null ? 'Alta Pacientes' : 'Edición de Paciente'}">
+        <main class="app-content" id="main">
+            <h1 class="page-title"
+                th:text="${paciente.id == null ? #messages.msg('paciente.titulo.alta') : #messages.msg('paciente.titulo.edicion')}">
                 Alta Pacientes</h1>
-            <p class="page-subtitle">Complete los datos del paciente.</p>
+            <p class="page-subtitle" th:text="#{paciente.subtitulo.alta}">Complete los datos del paciente.</p>
 
             <div class="panel">
                 <div class="panel-body">
@@ -21,93 +26,99 @@
                         method="post">
                         <div class="form-grid">
                             <div class="field">
-                                <label class="field-label" for="dni">DNI</label>
+                                <label class="field-label" for="dni" th:text="#{common.dni}">DNI</label>
                                 <input class="input" type="text" id="dni" name="dni"
-                                    th:value="*{dni}" placeholder="Ej: 30.123.456" required>
+                                    th:value="*{dni}" th:placeholder="#{paciente.placeholder.dni}" placeholder="Ej: 30.123.456" required
+                                    th:attr="aria-describedby=${#fields.hasErrors('dni')} ? 'error-dni' : null,
+                                        aria-invalid=${#fields.hasErrors('dni')} ? 'true' : null">
                                 <p th:replace="~{fragments/layout :: fieldError('dni')}"></p>
                             </div>
                             <div class="field">
-                                <label class="field-label" for="nombre">Nombre</label>
+                                <label class="field-label" for="nombre" th:text="#{common.nombre}">Nombre</label>
                                 <input class="input" type="text" id="nombre" name="nombre"
-                                    th:value="*{nombre}" placeholder="Nombre" required>
+                                    th:value="*{nombre}" th:placeholder="#{common.nombre}" placeholder="Nombre" required
+                                    th:attr="aria-describedby=${#fields.hasErrors('nombre')} ? 'error-nombre' : null,
+                                        aria-invalid=${#fields.hasErrors('nombre')} ? 'true' : null">
                                 <p th:replace="~{fragments/layout :: fieldError('nombre')}"></p>
                             </div>
                             <div class="field">
-                                <label class="field-label" for="apellido">Apellido</label>
+                                <label class="field-label" for="apellido" th:text="#{common.apellido}">Apellido</label>
                                 <input class="input" type="text" id="apellido" name="apellido"
-                                    th:value="*{apellido}" placeholder="Apellido" required>
+                                    th:value="*{apellido}" th:placeholder="#{common.apellido}" placeholder="Apellido" required
+                                    th:attr="aria-describedby=${#fields.hasErrors('apellido')} ? 'error-apellido' : null,
+                                        aria-invalid=${#fields.hasErrors('apellido')} ? 'true' : null">
                                 <p th:replace="~{fragments/layout :: fieldError('apellido')}"></p>
                             </div>
                             <div class="field">
-                                <label class="field-label" for="telefono">Teléfono</label>
+                                <label class="field-label" for="telefono" th:text="#{common.telefono}">Teléfono</label>
                                 <input class="input" type="text" id="telefono" name="telefono"
-                                    th:value="*{telefono}" placeholder="Teléfono">
+                                    th:value="*{telefono}" th:placeholder="#{common.telefono}" placeholder="Teléfono">
                             </div>
                             <div class="field">
-                                <label class="field-label" for="direccion">Dirección</label>
+                                <label class="field-label" for="direccion" th:text="#{common.direccion}">Dirección</label>
                                 <input class="input" type="text" id="direccion" name="direccion"
-                                    th:value="*{direccion}" placeholder="Dirección">
+                                    th:value="*{direccion}" th:placeholder="#{common.direccion}" placeholder="Dirección">
                             </div>
                             <div class="field">
-                                <label class="field-label" for="fechaNac">Fecha de nacimiento</label>
+                                <label class="field-label" for="fechaNac" th:text="#{paciente.fecha-nacimiento}">Fecha de nacimiento</label>
                                 <input class="input" type="date" id="fechaNac" name="fechaNac"
                                     th:value="*{fechaNac}">
                             </div>
                             <div class="field">
-                                <label class="field-label" for="tipoSangre">Tipo de sangre</label>
+                                <label class="field-label" for="tipoSangre" th:text="#{paciente.tipo-sangre}">Tipo de sangre</label>
                                 <input class="input" type="text" id="tipoSangre" name="tipoSangre"
-                                    th:value="*{tipoSangre}" placeholder="Ej: A+">
+                                    th:value="*{tipoSangre}" th:placeholder="#{clinico.placeholder.tipo-sangre}" placeholder="Ej: A+">
                             </div>
                         </div>
 
-                        <div class="nav-section">Obra social</div>
+                        <div class="nav-section" th:text="#{paciente.obra-social}">Obra social</div>
 
                         <div class="form-grid">
                             <div class="field">
-                                <label class="field-label" for="tieneOS">¿Tiene obra social?</label>
+                                <label class="field-label" for="tieneOS" th:text="#{paciente.tiene-obra-social}">¿Tiene obra social?</label>
                                 <select class="input" id="tieneOS" name="tieneOS">
-                                    <option value="false" th:selected="${paciente != null and !paciente.tieneOS}">No</option>
-                                    <option value="true" th:selected="${paciente != null and paciente.tieneOS}">Sí</option>
+                                    <option value="false" th:selected="${paciente != null and !paciente.tieneOS}" th:text="#{common.no}">No</option>
+                                    <option value="true" th:selected="${paciente != null and paciente.tieneOS}" th:text="#{common.si}">Sí</option>
                                 </select>
                             </div>
                             <div class="field">
-                                <label class="field-label" for="nombreOS">Nombre de la obra social</label>
+                                <label class="field-label" for="nombreOS" th:text="#{paciente.obra-social.nombre}">Nombre de la obra social</label>
                                 <input class="input" type="text" id="nombreOS" name="nombreOS"
-                                    th:value="*{nombreOS}" placeholder="Ej: OSDE, IOMA">
+                                    th:value="*{nombreOS}" th:placeholder="#{paciente.placeholder.os}" placeholder="Ej: OSDE, IOMA">
                             </div>
                             <div class="field">
-                                <label class="field-label" for="numeroAfiliado">Número de afiliado</label>
+                                <label class="field-label" for="numeroAfiliado" th:text="#{paciente.obra-social.numero}">Número de afiliado</label>
                                 <input class="input" type="text" id="numeroAfiliado" name="numeroAfiliado"
-                                    th:value="*{numeroAfiliado}" placeholder="Número de afiliado">
+                                    th:value="*{numeroAfiliado}" th:placeholder="#{paciente.obra-social.numero}" placeholder="Número de afiliado">
                             </div>
                         </div>
 
-                        <div class="nav-section">Datos clínicos</div>
+                        <div class="nav-section" th:text="#{clinico.datos}">Datos clínicos</div>
 
                         <div class="form-grid">
                             <div class="field field-full">
-                                <label class="field-label" for="alergias">Alergias</label>
+                                <label class="field-label" for="alergias" th:text="#{paciente.alergias}">Alergias</label>
                                 <textarea class="input" id="alergias" name="alergias" rows="2"
-                                    placeholder="Ej: penicilina, látex" th:text="*{alergias}"></textarea>
+                                    th:placeholder="#{paciente.placeholder.alergias}" placeholder="Ej: penicilina, látex" th:text="*{alergias}"></textarea>
                             </div>
                             <div class="field field-full">
-                                <label class="field-label" for="antecedentes">Antecedentes</label>
+                                <label class="field-label" for="antecedentes" th:text="#{paciente.antecedentes}">Antecedentes</label>
                                 <textarea class="input" id="antecedentes" name="antecedentes" rows="2"
-                                    placeholder="Enfermedades o condiciones previas" th:text="*{antecedentes}"></textarea>
+                                    th:placeholder="#{paciente.help.alergias}" placeholder="Enfermedades o condiciones previas" th:text="*{antecedentes}"></textarea>
                             </div>
                             <div class="field field-full">
-                                <label class="field-label" for="medicacion">Medicación</label>
+                                <label class="field-label" for="medicacion" th:text="#{paciente.medicacion}">Medicación</label>
                                 <textarea class="input" id="medicacion" name="medicacion" rows="2"
-                                    placeholder="Medicamentos actuales" th:text="*{medicacion}"></textarea>
+                                    th:placeholder="#{paciente.help.medicacion}" placeholder="Medicamentos actuales" th:text="*{medicacion}"></textarea>
                             </div>
                         </div>
 
                         <div class="actions mt-24">
                             <button class="btn btn-primary" type="submit"
-                                th:text="${paciente.id == null ? 'Crear Paciente' : 'Guardar Modificación'}">
+                                th:text="${paciente.id == null ? #messages.msg('paciente.crear') : #messages.msg('common.guardar-cambios')}">
                                 Crear Paciente
                             </button>
-                            <a class="btn btn-ghost" th:href="@{/pacientes}">Cancelar</a>
+                            <a class="btn btn-ghost" th:href="@{/pacientes}" th:text="#{common.cancelar}">Cancelar</a>
                         </div>
                     </form>
                 </div>
