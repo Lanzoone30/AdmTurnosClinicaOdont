@@ -44,6 +44,9 @@ class TurnoServiceTest {
     @Mock
     private PacienteRepository pacienteRepository;
 
+    @org.mockito.Spy
+    private Mensajes mensajes = new MensajesEco();
+
     @InjectMocks
     private TurnoService turnoService;
 
@@ -99,7 +102,7 @@ class TurnoServiceTest {
         assertThatThrownBy(() -> turnoService.crear(
                 LocalDate.of(2026, 8, 5), LocalTime.of(10, 0), "Dolor", 1, 2))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("ya tiene un turno");
+                .hasMessageContaining("error.turno.choque");
 
         then(turnoRepository).should(never()).save(org.mockito.ArgumentMatchers.any(Turno.class));
     }
@@ -183,7 +186,7 @@ class TurnoServiceTest {
         assertThatThrownBy(() -> turnoService.crear(
                 LocalDate.of(2026, 8, 5), LocalTime.of(15, 0), "Dolor", 1, 2))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("no atiende");
+                .hasMessageContaining("error.turno.fuera-horario");
 
         then(turnoRepository).should(never()).save(org.mockito.ArgumentMatchers.any(Turno.class));
     }
@@ -233,7 +236,7 @@ class TurnoServiceTest {
         // when/then
         assertThatThrownBy(() -> turnoService.cambiarEstado(5, EstadoTurno.CANCELADO, "  "))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("motivo de cancelacion");
+                .hasMessageContaining("error.turno.motivo-obligatorio");
 
         then(turnoRepository).should(never()).save(org.mockito.ArgumentMatchers.any(Turno.class));
     }
@@ -285,7 +288,7 @@ class TurnoServiceTest {
         // when/then
         assertThatThrownBy(() -> turnoService.cambiarEstado(8, EstadoTurno.CONFIRMADO, null))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("No se puede pasar de");
+                .hasMessageContaining("error.turno.transicion-invalida");
 
         then(turnoRepository).should(never()).save(org.mockito.ArgumentMatchers.any(Turno.class));
     }
@@ -302,7 +305,7 @@ class TurnoServiceTest {
         // when/then
         assertThatThrownBy(() -> turnoService.cambiarEstado(9, EstadoTurno.REALIZADO, null))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("nota clinica");
+                .hasMessageContaining("error.turno.nota-obligatoria");
 
         then(turnoRepository).should(never()).save(org.mockito.ArgumentMatchers.any(Turno.class));
     }
