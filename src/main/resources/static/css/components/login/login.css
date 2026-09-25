@@ -37,7 +37,7 @@
   background: var(--primary-grad);
   color: #fff;
   font-size: 28px;
-  box-shadow: 0 8px 16px -6px rgba(34, 74, 190, 0.45);
+  box-shadow: 0 8px 16px -6px rgba(14, 116, 144, 0.45);
 }
 
 .login-brand h1 {
