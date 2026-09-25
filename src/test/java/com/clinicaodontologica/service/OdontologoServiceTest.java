@@ -35,6 +35,9 @@ class OdontologoServiceTest {
     @Mock
     private TurnoRepository turnoRepository;
 
+    @org.mockito.Spy
+    private Mensajes mensajes = new MensajesEco();
+
     @InjectMocks
     private OdontologoService odontologoService;
 
@@ -110,7 +113,7 @@ class OdontologoServiceTest {
         // when/then
         assertThatThrownBy(() -> odontologoService.eliminar(1))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("turnos registrados");
+                .hasMessageContaining("error.odontologo.eliminar-con-turnos");
 
         then(odontologoRepository).should(never()).deleteById(1);
     }
@@ -128,7 +131,7 @@ class OdontologoServiceTest {
         // when/then
         assertThatThrownBy(() -> odontologoService.eliminar(1))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("usuario asociado");
+                .hasMessageContaining("error.odontologo.eliminar-con-usuario");
 
         then(odontologoRepository).should(never()).deleteById(1);
     }
