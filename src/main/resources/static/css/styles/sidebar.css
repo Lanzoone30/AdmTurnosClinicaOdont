@@ -13,6 +13,8 @@
   overflow-y: auto;
   overflow-x: hidden;
   z-index: 40;
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 2px 0 12px -6px rgba(7, 32, 36, 0.35);
   transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -25,6 +27,7 @@
   align-items: center;
   gap: 12px;
   padding: 22px 20px 18px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   font-size: 17px;
   font-weight: 800;
   letter-spacing: 0.01em;
@@ -67,7 +70,7 @@
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.09em;
-  color: rgba(255, 255, 255, 0.55);
+  color: rgba(255, 255, 255, 0.92);
 }
 
 .nav-item {
@@ -80,7 +83,7 @@
   gap: 12px;
   padding: 11px 12px;
   border-radius: 10px;
-  color: rgba(255, 255, 255, 0.88);
+  color: rgba(255, 255, 255, 0.96);
   font-weight: 700;
   font-size: 14.5px;
   transition: background 0.18s ease, color 0.18s ease;
@@ -90,6 +93,15 @@
   background: rgba(255, 255, 255, 0.12);
   color: #fff;
   text-decoration: none;
+}
+/* Item activo: barra a la izquierda + fondo mas marcado, para no depender solo del color */
+.nav-item .nav-link.is-active {
+  background: rgba(255, 255, 255, 0.16);
+  color: #fff;
+  box-shadow: inset 3px 0 0 #fff;
+}
+.nav-item .nav-link.is-active:hover {
+  background: rgba(255, 255, 255, 0.2);
 }
 
 .nav-item .nav-link .nav-chevron {
@@ -118,7 +130,7 @@
   display: block;
   padding: 8px 12px 8px 34px;
   border-radius: 8px;
-  color: rgba(255, 255, 255, 0.8);
+  color: rgba(255, 255, 255, 0.9);
   font-size: 14px;
   font-weight: 600;
   transition: background 0.18s ease, color 0.18s ease;
@@ -130,3 +142,52 @@
   text-decoration: none;
 }
 
+.nav-sub-link.is-active {
+  background: rgba(255, 255, 255, 0.16);
+  color: #fff;
+  box-shadow: inset 3px 0 0 #fff;
+}
+
+
+/* ==========================================================================
+   Movil: la sidebar pasa a panel off-canvas con overlay
+   ========================================================================== */
+
+.sidebar-overlay {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    transform: translateX(-100%);
+    box-shadow: var(--shadow-lg);
+  }
+
+  .app-main {
+    margin-left: 0;
+  }
+
+  .app.sidebar-collapsed .sidebar {
+    transform: translateX(-100%);
+  }
+
+  .app.sidebar-open .sidebar {
+    transform: translateX(0);
+  }
+
+  .sidebar-overlay {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 35;
+    background: rgba(7, 32, 36, 0.5);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.25s ease, visibility 0.25s ease;
+  }
+
+  .app.sidebar-open .sidebar-overlay {
+    opacity: 1;
+    visibility: visible;
+  }
+}
