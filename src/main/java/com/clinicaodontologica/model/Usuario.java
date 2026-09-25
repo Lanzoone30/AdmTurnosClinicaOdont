@@ -44,4 +44,8 @@ public class Usuario implements Serializable {
 
     @Enumerated(EnumType.STRING)
     private Rol rol;
+
+    /** Preferencia de idioma de la interfaz ("es" o "en"). */
+    @Size(max = 2)
+    private String idioma = "es";
 }
