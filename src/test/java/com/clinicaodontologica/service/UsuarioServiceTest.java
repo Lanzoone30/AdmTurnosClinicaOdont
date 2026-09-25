@@ -34,6 +34,9 @@ class UsuarioServiceTest {
     @Mock
     private PasswordEncoder passwordEncoder;
 
+    @org.mockito.Spy
+    private Mensajes mensajes = new MensajesEco();
+
     @InjectMocks
     private UsuarioService usuarioService;
 
@@ -90,7 +93,7 @@ class UsuarioServiceTest {
         // when/then
         assertThatThrownBy(() -> usuarioService.cambiarContrasenia("juan", "mala", "nueva"))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("actual no es correcta");
+                .hasMessageContaining("error.usuario.password-actual");
     }
 
     @Test
@@ -106,7 +109,7 @@ class UsuarioServiceTest {
         // when/then
         assertThatThrownBy(() -> usuarioService.cambiarContrasenia("juan", "correcta", "  "))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("no puede estar vacia");
+                .hasMessageContaining("error.usuario.password-vacia");
     }
 
     @Test
@@ -143,8 +146,37 @@ class UsuarioServiceTest {
         // when/then
         assertThatThrownBy(() -> usuarioService.eliminar(1))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("odontologo");
+                .hasMessageContaining("error.usuario.eliminar-asociado");
 
         then(usuarioRepository).should(never()).deleteById(1);
+    }
+
+    @Test
+    @DisplayName("cambiarIdioma: actualiza el idioma del usuario existente")
+    void cambiarIdioma_ActualizaIdioma() {
+        // given
+        Usuario usuario = new Usuario();
+        usuario.setNombreUsuario("juan");
+        given(usuarioRepository.findByNombreUsuario("juan")).willReturn(Optional.of(usuario));
+
+        // when
+        usuarioService.cambiarIdioma("juan", "en");
+
+        // then
+        assertThat(usuario.getIdioma()).isEqualTo("en");
+        then(usuarioRepository).should().save(usuario);
+    }
+
+    @Test
+    @DisplayName("cambiarIdioma: sin usuario no hace nada")
+    void cambiarIdioma_SinUsuario_NoHaceNada() {
+        // given
+        given(usuarioRepository.findByNombreUsuario("nadie")).willReturn(Optional.empty());
+
+        // when
+        usuarioService.cambiarIdioma("nadie", "en");
+
+        // then
+        then(usuarioRepository).should(never()).save(org.mockito.ArgumentMatchers.any());
     }
 }
