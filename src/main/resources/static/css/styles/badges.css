@@ -1,13 +1,4 @@
 /* ==========================================================================
-   Badges para roles
-   ========================================================================== */
-
-.badge-admin { background: var(--primary); color: #fff; }
-.badge-odontologo { background: var(--success); color: #fff; }
-.badge-secretario { background: var(--info); color: #fff; }
-.badge-paciente { background: var(--warning); color: #5a5c69; }
-
-/* ==========================================================================
    Badges
    ========================================================================== */
 
@@ -19,43 +10,63 @@
   font-weight: 800;
 }
 
+/* Badges para roles */
+.badge-admin {
+  background: var(--badge-blue-bg);
+  color: var(--badge-blue-fg);
+}
+
+.badge-odontologo {
+  background: var(--badge-green-bg);
+  color: var(--badge-green-fg);
+}
+
+.badge-secretario {
+  background: var(--badge-cyan-bg);
+  color: var(--badge-cyan-fg);
+}
+
+.badge-paciente {
+  background: var(--badge-amber-bg);
+  color: var(--badge-amber-fg);
+}
+
 .badge-blue {
-  background: rgba(78, 115, 223, 0.12);
-  color: var(--primary-dark);
+  background: var(--badge-blue-bg);
+  color: var(--badge-blue-fg);
 }
 
 .badge-green {
-  background: rgba(28, 200, 138, 0.14);
-  color: #12875e;
+  background: var(--badge-green-bg);
+  color: var(--badge-green-fg);
 }
 
 .badge-cyan {
-  background: rgba(54, 185, 204, 0.14);
-  color: #1d7d8c;
+  background: var(--badge-cyan-bg);
+  color: var(--badge-cyan-fg);
 }
 
 .badge-amber {
-  background: rgba(246, 194, 62, 0.2);
-  color: #966a00;
+  background: var(--badge-amber-bg);
+  color: var(--badge-amber-fg);
 }
 
 .badge-success {
-  background: rgba(28, 200, 138, 0.14);
-  color: #12875e;
+  background: var(--badge-green-bg);
+  color: var(--badge-green-fg);
 }
 
 .badge-secondary {
-  background: rgba(90, 92, 105, 0.12);
-  color: var(--text);
+  background: var(--badge-gray-bg);
+  color: var(--badge-gray-fg);
 }
 
 .badge-danger {
-  background: rgba(231, 74, 59, 0.12);
-  color: #c03024;
+  background: var(--badge-red-bg);
+  color: var(--badge-red-fg);
 }
 
 .badge-info {
-  background: rgba(54, 185, 204, 0.14);
-  color: #1d7d8c;
+  background: var(--badge-cyan-bg);
+  color: var(--badge-cyan-fg);
 }
-
