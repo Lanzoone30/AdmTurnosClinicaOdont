@@ -1,41 +1,46 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="es">
-<head th:replace="~{fragments/layout :: head('Ver Usuarios')}"></head>
+<html xmlns:th="http://www.thymeleaf.org" th:lang="${idiomaActual}" lang="es">
+<head th:replace="~{fragments/layout :: head(#{usuario.titulo.ver})}"></head>
 
 <body class="app">
 
+    <a class="skip-link" href="#main" th:text="#{a11y.saltar-contenido}">Saltar al contenido principal</a>
+
     <aside th:replace="~{fragments/layout :: sidebar}"></aside>
+
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
     <div class="app-main">
         <header th:replace="~{fragments/layout :: topbar}"></header>
 
-        <main class="app-content">
-            <h1 class="page-title">Ver Usuarios</h1>
-            <p class="page-subtitle">A continuación podrá visualizar la lista completa de usuarios.</p>
+        <main class="app-content" id="main">
+            <h1 class="page-title" th:text="#{usuario.titulo.ver}">Ver Usuarios</h1>
+            <p class="page-subtitle" th:text="#{usuario.subtitulo.ver}">A continuación podrá visualizar la lista completa de usuarios.</p>
 
             <div th:if="${error}" class="alert alert-error" role="alert">
-                <i class="fas fa-exclamation-circle"></i>
+                <i class="fas fa-exclamation-circle" aria-hidden="true"></i>
                 <span th:text="${error}">Error</span>
-                <button class="alert-close" type="button" aria-label="Cerrar">&times;</button>
+                <button class="alert-close" type="button" th:aria-label="#{common.cerrar-alerta}" aria-label="Cerrar">&times;</button>
             </div>
 
             <div class="panel">
                 <div class="panel-header">
-                    <h2 class="panel-title">Usuarios</h2>
+                    <h2 class="panel-title" th:text="#{nav.usuarios}">Usuarios</h2>
                     <a class="btn btn-primary" th:href="@{/usuarios/nuevo}">
-                        <i class="fas fa-plus"></i>
-                        Nuevo Usuario
+                        <i class="fas fa-plus" aria-hidden="true"></i>
+                        <span th:text="#{usuario.nuevo}">Nuevo Usuario</span>
                     </a>
                 </div>
                 <div class="panel-body">
-                    <div class="table-wrap">
+                    <div class="table-wrap" role="region" th:aria-label="#{usuario.listado}" aria-label="Listado de usuarios" tabindex="0">
                         <table class="table">
+<caption th:text="#{usuario.listado}">Listado de usuarios</caption>
                             <thead>
                                 <tr>
-                                    <th>Id</th>
-                                    <th>Nombre</th>
-                                    <th>Rol</th>
-                                    <th class="text-right">Acción</th>
+                                    <th scope="col" th:text="#{common.id}">Id</th>
+                                    <th scope="col" th:text="#{common.tabla.nombre}">Nombre</th>
+                                    <th scope="col" th:text="#{common.tabla.rol}">Rol</th>
+                                    <th scope="col" class="text-right" th:text="#{common.tabla.accion}">Acción</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -50,16 +55,16 @@
                                         <div class="actions text-right">
                                             <a class="btn-icon btn-icon-edit"
                                                 th:href="@{/usuarios/editar/{id}(id=${usuario.id})}"
-                                                title="Editar">
-                                                <i class="fas fa-pen"></i>
+                                                th:title="#{common.editar}" th:aria-label="#{common.editar}" title="Editar" aria-label="Editar">
+                                                <i class="fas fa-pen" aria-hidden="true"></i>
                                             </a>
                                             <form class="inline-form"
                                                 th:action="@{/usuarios/eliminar/{id}(id=${usuario.id})}"
                                                 method="post"
-                                                data-confirm="¿Eliminar al usuario?">
+                                                th:attr="data-confirm=#{common.confirmar-eliminar-usuario}">
                                                 <button class="btn-icon btn-icon-delete" type="submit"
-                                                    title="Eliminar">
-                                                    <i class="fas fa-trash"></i>
+                                                    th:title="#{common.eliminar}" title="Eliminar" th:aria-label="#{common.eliminar}" aria-label="Eliminar">
+                                                    <i class="fas fa-trash" aria-hidden="true"></i>
                                                 </button>
                                             </form>
                                         </div>
@@ -69,7 +74,9 @@
                         </table>
                     </div>
                     <div th:if="${usuarios.isEmpty()}" class="empty-state">
-                        <p>No hay usuarios registrados.</p>
+                        <i class="fas fa-user-cog empty-icon" aria-hidden="true"></i>
+                        <p th:text="#{usuario.sin-registros}">No hay usuarios registrados.</p>
+                        <a class="btn btn-primary btn-sm" th:href="@{/usuarios/nuevo}" th:text="#{usuario.alta}">Alta de usuario</a>
                     </div>
                 </div>
             </div>
