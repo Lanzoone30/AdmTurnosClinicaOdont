@@ -1,8 +1,11 @@
 package com.clinicaodontologica.controller;
 
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ModelAttribute;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * Advice global de modelos de vista: expone el usuario autenticado y su
@@ -38,5 +41,27 @@ public class GlobalModelAdvice {
                 .map(authority -> authority.getAuthority().replace("ROLE_", ""))
                 .findFirst()
                 .orElse("");
+    }
+
+    /**
+     * Agrega el codigo de idioma activo ("es" o "en") al modelo de cada vista.
+     *
+     * @return codigo de idioma de la peticion actual
+     */
+    @ModelAttribute("idiomaActual")
+    public String idiomaActual() {
+        return LocaleContextHolder.getLocale().getLanguage();
+    }
+
+    /**
+     * Agrega la ruta de la peticion actual (ej: "/pacientes/5") al modelo, para
+     * que el menu marque el item activo con {@code aria-current="page"}.
+     *
+     * @param request peticion actual
+     * @return ruta solicitada, o "/" si no esta disponible
+     */
+    @ModelAttribute("rutaActual")
+    public String rutaActual(HttpServletRequest request) {
+        return request.getRequestURI();
     }
 }
