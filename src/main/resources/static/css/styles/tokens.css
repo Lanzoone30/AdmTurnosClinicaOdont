@@ -1,38 +1,121 @@
-/* ==========================================================================
-   ClinicaOdontologica - Design System
-   Sistema visual propio basado en la paleta legacy del proyecto (SB Admin 2):
-   azul #4e73df, azul profundo #224abe, verde #1cc88a, cyan #36b9cc,
-   ambar #f6c23e, rojo #e74a3b, grises #5a5c69 / #858796, fondo #f8f9fc.
-   ========================================================================== */
-
 :root {
-  /* Paleta legacy */
-  --primary: #4e73df;
-  --primary-dark: #224abe;
-  --success: #1cc88a;
-  --info: #36b9cc;
-  --warning: #f6c23e;
-  --danger: #e74a3b;
+  color-scheme: light;
 
-  --bg: #f8f9fc;
+  /* Brand: teal clinico (Medical Clinic). --primary y --accent-dark son las
+     variantes con contraste AA para texto/fondos; --secondary es solo relleno. */
+  --primary: #0e7490;
+  --primary-dark: #155e75;
+  --primary-bright: #0891b2;
+  --on-primary: #ffffff;
+  --secondary: #22d3ee;
+  --accent: #16a34a;
+  --accent-dark: #166534;
+  --ring: #0891b2;
+
+  --success: #15803d;
+  --info: #0e7490;
+  --warning: #92400e;
+  --danger: #dc2626;
+
+  /* Relleno solido para botones peligrosos (el token --danger es color de texto) */
+  --danger-solid: #dc2626;
+  --danger-solid-dark: #b91c1c;
+
+  --bg: #f0fdfa;
   --surface: #ffffff;
-  --text: #5a5c69;
-  --text-muted: #636577;
-  --border: #e4e7f0;
-  --border-strong: #d5d9e6;
+  --surface-alt: #e8f1f6;
+  --text: #134e4a;
+  --text-muted: #475569;
+  --border: #ccfbf1;
+  --border-strong: #a7ded6;
 
-  --primary-grad: linear-gradient(180deg, #4e73df 10%, #224abe 100%);
+  --select-arrow: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23475569' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
 
-  /* Sombras con offset + blur reales */
-  --shadow-sm: 0 1px 2px rgba(90, 92, 105, 0.07), 0 1px 3px rgba(90, 92, 105, 0.08);
-  --shadow-md: 0 2px 4px -2px rgba(90, 92, 105, 0.1), 0 8px 16px -6px rgba(90, 92, 105, 0.14);
-  --shadow-lg: 0 8px 16px -6px rgba(34, 74, 190, 0.18), 0 24px 48px -12px rgba(34, 74, 190, 0.22);
+  /* Gradiente del sidebar: da profundidad al panel de navegacion sin depender del color */
+  --primary-grad: linear-gradient(180deg, #0e7490 10%, #155e75 100%);
 
-  /* Metricas */
+  /* Badges: fondo tenue + texto oscuro, contraste AA en ambos temas */
+  --badge-blue-bg: #e0f2f5;
+  --badge-blue-fg: #0e7490;
+  --badge-green-bg: #dcfce7;
+  --badge-green-fg: #166534;
+  --badge-cyan-bg: #cff9fe;
+  --badge-cyan-fg: #0e7490;
+  --badge-amber-bg: #fef3c7;
+  --badge-amber-fg: #92400e;
+  --badge-red-bg: #fee2e2;
+  --badge-red-fg: #b91c1c;
+  --badge-gray-bg: #e2e8f0;
+  --badge-gray-fg: #475569;
+
+  /* Sombras: elevacion sm (card) < md (hover) < lg (modal flotante) */
+  --shadow-sm: 0 1px 2px rgba(19, 78, 74, 0.06), 0 1px 3px rgba(19, 78, 74, 0.08);
+  --shadow-md: 0 2px 4px -2px rgba(19, 78, 74, 0.1), 0 8px 16px -6px rgba(19, 78, 74, 0.14);
+  --shadow-lg: 0 8px 16px -6px rgba(14, 116, 144, 0.2), 0 24px 48px -12px rgba(14, 116, 144, 0.24);
+
   --sidebar-width: 252px;
-  --radius: 14px;
-  --radius-sm: 8px;
+  /* Niveles de contenedor: pagina plana (sin radio) < card (radius) < modal (radius-lg). */
+  --radius: 16px;
+  --radius-sm: 10px;
+  --radius-lg: 22px;
   --topbar-height: 64px;
 
-  --font: 'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  /* Escala de espaciado: interno de un grupo < separacion entre grupos <
+     separacion entre secciones. Da un ritmo vertical consistente. */
+  --space-inline: 12px;
+  --space-group: 20px;
+  --space-section: 32px;
+
+  --font: "Noto Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-heading: "Figtree", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+
+  --primary: #22d3ee;
+  --primary-dark: #0891b2;
+  --primary-bright: #67e8f9;
+  --on-primary: #062a30;
+  --secondary: #0891b2;
+  --accent: #4ade80;
+  --accent-dark: #86efac;
+  --ring: #22d3ee;
+
+  --success: #4ade80;
+  --info: #22d3ee;
+  --warning: #fcd34d;
+  --danger: #f87171;
+
+  --danger-solid: #dc2626;
+  --danger-solid-dark: #b91c1c;
+
+  --bg: #072024;
+  --surface: #0e2e33;
+  --surface-alt: #14383e;
+  --text: #e6fbf7;
+  --text-muted: #9db8be;
+  --border: #17363c;
+  --border-strong: #204a51;
+
+  --select-arrow: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%239db8be' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+
+  --primary-grad: linear-gradient(180deg, #0e2e33 10%, #072024 100%);
+
+  --badge-blue-bg: #0e3a44;
+  --badge-blue-fg: #67e8f9;
+  --badge-green-bg: #0c3a22;
+  --badge-green-fg: #86efac;
+  --badge-cyan-bg: #0b3742;
+  --badge-cyan-fg: #67e8f9;
+  --badge-amber-bg: #3a2a0a;
+  --badge-amber-fg: #fcd34d;
+  --badge-red-bg: #3a1414;
+  --badge-red-fg: #fca5a5;
+  --badge-gray-bg: #1e3a40;
+  --badge-gray-fg: #cbd5e1;
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4), 0 1px 3px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 2px 4px -2px rgba(0, 0, 0, 0.5), 0 8px 16px -6px rgba(0, 0, 0, 0.45);
+  --shadow-lg: 0 8px 16px -6px rgba(0, 0, 0, 0.55), 0 24px 48px -12px rgba(0, 0, 0, 0.6);
 }
