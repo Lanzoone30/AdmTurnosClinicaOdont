@@ -1,147 +1,204 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="es">
-<head th:replace="~{fragments/layout :: head('Inicio')}"></head>
+<html xmlns:th="http://www.thymeleaf.org" th:lang="${idiomaActual}" lang="es">
+<head th:replace="~{fragments/layout :: head(#{dashboard.titulo})}"></head>
 
 <body class="app">
 
+    <a class="skip-link" href="#main" th:text="#{a11y.saltar-contenido}">Saltar al contenido principal</a>
+
     <aside th:replace="~{fragments/layout :: sidebar}"></aside>
+
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
     <div class="app-main">
         <header th:replace="~{fragments/layout :: topbar}"></header>
 
-        <main class="app-content">
-            <h1 class="page-title">Dashboard</h1>
-            <p class="page-subtitle">Resumen del sistema — Clínica Odontológica</p>
+        <main class="app-content" id="main">
+            <h1 class="page-title" th:text="#{dashboard.titulo}">Dashboard</h1>
+            <p class="page-subtitle" th:text="#{dashboard.subtitulo}">Resumen del sistema, Clínica Odontológica</p>
 
-            <!-- Metricas principales -->
+            <div th:if="${dashboard.totalTurnos == 0 and dashboard.totalPacientes == 0 and dashboard.totalOdontologos == 0}"
+                class="panel">
+                <div class="panel-body">
+                    <div class="empty-state">
+                        <i class="fas fa-tooth empty-icon" aria-hidden="true"></i>
+                        <p th:text="#{dashboard.sin-actividad}">Todavía no hay actividad registrada.</p>
+                        <a class="btn btn-primary btn-sm" th:href="@{/odontologos/nuevo}" th:text="#{dashboard.alta-odontologo}">Alta de odontólogo</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Totales del sistema -->
             <div class="stat-grid">
                 <a class="stat-card stat-card--primary" th:href="@{/pacientes}">
-                    <i class="fas fa-hospital-user stat-card-icon"></i>
-                    <h2 class="stat-card-label">Pacientes</h2>
+                    <i class="fas fa-hospital-user stat-card-icon" aria-hidden="true"></i>
+                    <h2 class="stat-card-label" th:text="#{dashboard.pacientes}">Pacientes</h2>
                     <p class="stat-card-value" th:text="${dashboard.totalPacientes}">0</p>
-                    <p class="stat-card-text">Registrados en el sistema</p>
+                    <p class="stat-card-text" th:text="#{dashboard.pacientes.texto}">Registrados en el sistema</p>
                 </a>
 
                 <a class="stat-card stat-card--success" th:href="@{/odontologos}">
-                    <i class="fas fa-notes-medical stat-card-icon"></i>
-                    <h2 class="stat-card-label">Odontólogos</h2>
+                    <i class="fas fa-notes-medical stat-card-icon" aria-hidden="true"></i>
+                    <h2 class="stat-card-label" th:text="#{dashboard.odontologos}">Odontólogos</h2>
                     <p class="stat-card-value" th:text="${dashboard.totalOdontologos}">0</p>
-                    <p class="stat-card-text">Profesionales activos</p>
+                    <p class="stat-card-text" th:text="#{dashboard.odontologos.texto}">Profesionales activos</p>
                 </a>
 
                 <a class="stat-card stat-card--info" th:href="@{/turnos}">
-                    <i class="fas fa-calendar-check stat-card-icon"></i>
-                    <h2 class="stat-card-label">Turnos</h2>
+                    <i class="fas fa-calendar-check stat-card-icon" aria-hidden="true"></i>
+                    <h2 class="stat-card-label" th:text="#{dashboard.turnos}">Turnos</h2>
                     <p class="stat-card-value" th:text="${dashboard.totalTurnos}">0</p>
-                    <p class="stat-card-text">Total agendados</p>
+                    <p class="stat-card-text" th:text="#{dashboard.turnos.texto}">Total agendados</p>
                 </a>
 
                 <a class="stat-card stat-card--warning" th:href="@{/usuarios}">
-                    <i class="fas fa-user-cog stat-card-icon"></i>
-                    <h2 class="stat-card-label">Usuarios</h2>
+                    <i class="fas fa-user-cog stat-card-icon" aria-hidden="true"></i>
+                    <h2 class="stat-card-label" th:text="#{dashboard.usuarios}">Usuarios</h2>
                     <p class="stat-card-value" th:text="${dashboard.totalUsuarios}">0</p>
-                    <p class="stat-card-text">Del sistema</p>
+                    <p class="stat-card-text" th:text="#{dashboard.usuarios.texto}">Del sistema</p>
                 </a>
             </div>
 
-            <!-- Turnos de hoy -->
-            <div class="stat-grid mt-24">
-                <a class="stat-card stat-card--danger" th:href="@{/turnos}">
-                    <i class="fas fa-clock stat-card-icon"></i>
-                    <h2 class="stat-card-label">Turnos de Hoy</h2>
+            <!-- Agenda del dia: lo primero que el admin necesita ver -->
+            <h2 class="section-title" th:text="#{dashboard.hoy}">Hoy</h2>
+            <div class="stat-grid">
+                <a class="stat-card stat-card--primary" th:href="@{/turnos}">
+                    <i class="fas fa-clock stat-card-icon" aria-hidden="true"></i>
+                    <h2 class="stat-card-label" th:text="#{dashboard.turnos-hoy}">Turnos de hoy</h2>
                     <p class="stat-card-value" th:text="${dashboard.turnosHoy}">0</p>
-                    <p class="stat-card-text"><span th:text="${#temporals.format(#temporals.createToday(), 'dd/MM/yyyy')}">hoy</span></p>
+                    <p class="stat-card-text"
+                        th:text="${#temporals.format(#temporals.createToday(), 'dd/MM/yyyy')}">hoy</p>
                 </a>
 
                 <a class="stat-card stat-card--warning" th:href="@{/turnos}">
-                    <i class="fas fa-hourglass-half stat-card-icon"></i>
-                    <h2 class="stat-card-label">Pendientes</h2>
+                    <i class="fas fa-hourglass-half stat-card-icon" aria-hidden="true"></i>
+                    <h2 class="stat-card-label" th:text="#{dashboard.pendientes}">Pendientes</h2>
                     <p class="stat-card-value" th:text="${dashboard.turnosPendientes}">0</p>
-                    <p class="stat-card-text">Sin confirmar</p>
+                    <p class="stat-card-text" th:text="#{dashboard.pendientes.texto}">Sin confirmar</p>
                 </a>
 
                 <a class="stat-card stat-card--success" th:href="@{/turnos}">
-                    <i class="fas fa-check-circle stat-card-icon"></i>
-                    <h2 class="stat-card-label">Confirmados</h2>
+                    <i class="fas fa-check-circle stat-card-icon" aria-hidden="true"></i>
+                    <h2 class="stat-card-label" th:text="#{dashboard.confirmados}">Confirmados</h2>
                     <p class="stat-card-value" th:text="${dashboard.turnosConfirmados}">0</p>
-                    <p class="stat-card-text">A confirmados</p>
+                    <p class="stat-card-text" th:text="#{dashboard.confirmados.texto}">Listos para atender</p>
                 </a>
 
                 <a class="stat-card stat-card--info" th:href="@{/pacientes}">
-                    <i class="fas fa-user-plus stat-card-icon"></i>
-                    <h2 class="stat-card-label">Pacientes del Mes</h2>
+                    <i class="fas fa-user-plus stat-card-icon" aria-hidden="true"></i>
+                    <h2 class="stat-card-label" th:text="#{dashboard.pacientes-mes}">Pacientes del mes</h2>
                     <p class="stat-card-value" th:text="${dashboard.pacientesNuevosMes}">0</p>
-                    <p class="stat-card-text">Altas este mes</p>
+                    <p class="stat-card-text" th:text="#{dashboard.pacientes-mes.texto}">Altas este mes</p>
                 </a>
             </div>
 
-            <!-- Resumen ejecutivo -->
-            <div class="dashboard-grid">
+            <!-- Actividad semanal + distribucion de estados -->
+            <div class="dashboard-grid"
+                th:with="maxSemana=${dashboard.turnosSemanaActual > dashboard.turnosSemanaPasada ? dashboard.turnosSemanaActual : dashboard.turnosSemanaPasada},
+                    diff=${dashboard.turnosSemanaActual - dashboard.turnosSemanaPasada}">
                 <div class="panel">
                     <div class="panel-header">
-                        <h2 class="panel-title">Rendimiento de turnos</h2>
+                        <h2 class="panel-title" th:text="#{dashboard.actividad-semanal}">Actividad semanal</h2>
+                        <span class="delta"
+                            th:classappend="${diff > 0} ? 'delta--up' : (${diff < 0} ? 'delta--down' : 'delta--flat')">
+                            <i class="fas"
+                                th:classappend="${diff > 0} ? 'fa-arrow-up' : (${diff < 0} ? 'fa-arrow-down' : 'fa-minus')"
+                                aria-hidden="true"></i>
+                            <span th:text="|${diff > 0 ? '+' : ''}${diff} vs semana pasada|">0</span>
+                        </span>
                     </div>
                     <div class="panel-body">
-                        <p>
-                            <strong>Semana actual:</strong>
-                            <span th:text="${dashboard.turnosSemanaActual}">0</span> turnos
-                            (semana pasada: <span th:text="${dashboard.turnosSemanaPasada}">0</span>)
-                        </p>
-                        <p>
-                            <strong>Realizados:</strong>
-                            <span th:text="${dashboard.turnosRealizados}">0</span>
-                        </p>
-                        <p>
-                            <strong>Cancelados:</strong>
-                            <span th:text="${dashboard.turnosCancelados}">0</span>
-                        </p>
-                        <p th:if="${dashboard.odontologoTop != null}">
-                            <strong>Odontólogo con más turnos:</strong>
-                            <span th:text="${dashboard.odontologoTop.nombre + ' ' + dashboard.odontologoTop.apellido + ' (' + dashboard.odontologoTop.total + ')'}">top</span>
-                        </p>
-                        <p th:if="${dashboard.odontologoTop == null}" class="text-muted">
-                            Aún no hay turnos para calcular ranking.
-                        </p>
+                        <div class="week-chart" role="img"
+                            th:attr="aria-label=|Turnos esta semana: ${dashboard.turnosSemanaActual}. Semana pasada: ${dashboard.turnosSemanaPasada}.|">
+                            <div class="week-bar week-bar--prev">
+                                <span class="week-bar-value" th:text="${dashboard.turnosSemanaPasada}">0</span>
+                                <div class="week-bar-plot">
+                                    <div class="week-bar-fill"
+                                        th:style="|height: ${maxSemana > 0 ? (dashboard.turnosSemanaPasada * 100 / maxSemana) : 0}%|">
+                                    </div>
+                                </div>
+                                <span class="week-bar-label" th:text="#{dashboard.semana-pasada}">Semana pasada</span>
+                            </div>
+                            <div class="week-bar week-bar--current">
+                                <span class="week-bar-value" th:text="${dashboard.turnosSemanaActual}">0</span>
+                                <div class="week-bar-plot">
+                                    <div class="week-bar-fill"
+                                        th:style="|height: ${maxSemana > 0 ? (dashboard.turnosSemanaActual * 100 / maxSemana) : 0}%|">
+                                    </div>
+                                </div>
+                                <span class="week-bar-label" th:text="#{dashboard.esta-semana}">Esta semana</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                <div class="panel">
+                <div class="panel"
+                    th:with="totalEstados=${dashboard.turnosPendientes + dashboard.turnosConfirmados + dashboard.turnosRealizados + dashboard.turnosCancelados}">
                     <div class="panel-header">
-                        <h2 class="panel-title">Turnos por estado</h2>
+                        <h2 class="panel-title" th:text="#{dashboard.turnos-por-estado}">Turnos por estado</h2>
                     </div>
                     <div class="panel-body">
-                        <ul class="list-stats">
-                            <li><span class="badge badge-pendiente">PENDIENTE</span> <span th:text="${dashboard.turnosPendientes}">0</span></li>
-                            <li><span class="badge badge-success">CONFIRMADO</span> <span th:text="${dashboard.turnosConfirmados}">0</span></li>
-                            <li><span class="badge badge-realizado">REALIZADO</span> <span th:text="${dashboard.turnosRealizados}">0</span></li>
-                            <li><span class="badge badge-cancelado">CANCELADO</span> <span th:text="${dashboard.turnosCancelados}">0</span></li>
+                        <div class="state-bar" th:if="${totalEstados > 0}" aria-hidden="true">
+                            <div class="state-bar-seg state-bar-seg--pendiente"
+                                th:style="|width: ${dashboard.turnosPendientes * 100 / totalEstados}%|"></div>
+                            <div class="state-bar-seg state-bar-seg--confirmado"
+                                th:style="|width: ${dashboard.turnosConfirmados * 100 / totalEstados}%|"></div>
+                            <div class="state-bar-seg state-bar-seg--realizado"
+                                th:style="|width: ${dashboard.turnosRealizados * 100 / totalEstados}%|"></div>
+                            <div class="state-bar-seg state-bar-seg--cancelado"
+                                th:style="|width: ${dashboard.turnosCancelados * 100 / totalEstados}%|"></div>
+                        </div>
+
+                        <ul class="state-legend">
+                            <li><span class="dot dot--pendiente"></span> <span th:text="#{estado.pendiente}">Pendiente</span>
+                                <strong th:text="${dashboard.turnosPendientes}">0</strong>
+                            </li>
+                            <li><span class="dot dot--confirmado"></span> <span th:text="#{estado.confirmado}">Confirmado</span>
+                                <strong th:text="${dashboard.turnosConfirmados}">0</strong>
+                            </li>
+                            <li><span class="dot dot--realizado"></span> <span th:text="#{estado.realizado}">Realizado</span>
+                                <strong th:text="${dashboard.turnosRealizados}">0</strong>
+                            </li>
+                            <li><span class="dot dot--cancelado"></span> <span th:text="#{estado.cancelado}">Cancelado</span>
+                                <strong th:text="${dashboard.turnosCancelados}">0</strong>
+                            </li>
                         </ul>
+
+                        <p class="mt-24" th:if="${dashboard.odontologoTop != null}">
+                            <strong th:text="#{dashboard.odontologo-top}">Odontólogo con más turnos:</strong>
+                            <span
+                                th:text="${dashboard.odontologoTop.nombre + ' ' + dashboard.odontologoTop.apellido + ' (' + dashboard.odontologoTop.total + ')'}">top</span>
+                        </p>
+                        <p class="mt-24 text-muted" th:if="${dashboard.odontologoTop == null}"
+                            th:text="#{dashboard.sin-ranking}">Aún no hay turnos para calcular el ranking.</p>
                     </div>
                 </div>
             </div>
 
             <!-- Tablas de detalle -->
             <div class="dashboard-grid mt-24">
-                <!-- Proximos turnos -->
                 <div class="panel">
                     <div class="panel-header">
-                        <h2 class="panel-title">Próximos Turnos</h2>
+                        <h2 class="panel-title" th:text="#{dashboard.proximos-turnos}">Próximos turnos</h2>
                         <a class="btn btn-sm btn-primary" th:href="@{/turnos/nuevo}">
-                            <i class="fas fa-plus"></i> Nuevo
+                            <i class="fas fa-plus" aria-hidden="true"></i> <span th:text="#{common.nuevo}">Nuevo</span>
                         </a>
                     </div>
                     <div class="panel-body">
                         <div th:if="${dashboard.proximosTurnos.isEmpty()}" class="empty-state">
-                            <p>No hay turnos registrados.</p>
+                            <i class="fas fa-calendar-times empty-icon" aria-hidden="true"></i>
+                            <p th:text="#{dashboard.sin-turnos}">No hay turnos registrados.</p>
                         </div>
-                        <div class="table-wrap" th:unless="${dashboard.proximosTurnos.isEmpty()}">
+                        <div class="table-wrap" role="region" th:aria-label="#{dashboard.proximos-turnos}" aria-label="Próximos turnos" tabindex="0"
+                            th:unless="${dashboard.proximosTurnos.isEmpty()}">
                             <table class="table table-sm">
+                                <caption th:text="#{dashboard.proximos-turnos}">Próximos turnos</caption>
                                 <thead>
                                     <tr>
-                                        <th>Fecha</th>
-                                        <th>Hora</th>
-                                        <th>Paciente</th>
-                                        <th>Odontólogo</th>
+                                        <th scope="col" th:text="#{turno.fecha}">Fecha</th>
+                                        <th scope="col" th:text="#{turno.hora}">Hora</th>
+                                        <th scope="col" th:text="#{turno.paciente}">Paciente</th>
+                                        <th scope="col" th:text="#{turno.odontologo}">Odontólogo</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -149,7 +206,8 @@
                                         <td th:text="${#temporals.format(turno.fechaTurno, 'dd/MM/yyyy')}">fecha</td>
                                         <td th:text="${#temporals.format(turno.horaTurno, 'HH:mm')}">hora</td>
                                         <td th:text="${turno.paciente.nombre + ' ' + turno.paciente.apellido}">paciente</td>
-                                        <td th:text="${turno.odontologo.nombre + ' ' + turno.odontologo.apellido}">odontologo</td>
+                                        <td th:text="${turno.odontologo.nombre + ' ' + turno.odontologo.apellido}">
+                                            odontologo</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -157,26 +215,28 @@
                     </div>
                 </div>
 
-                <!-- Ultimos pacientes -->
                 <div class="panel">
                     <div class="panel-header">
-                        <h2 class="panel-title">Últimos Pacientes</h2>
+                        <h2 class="panel-title" th:text="#{dashboard.ultimos-pacientes}">Últimos pacientes</h2>
                         <a class="btn btn-sm btn-primary" th:href="@{/pacientes/nuevo}">
-                            <i class="fas fa-plus"></i> Nuevo
+                            <i class="fas fa-plus" aria-hidden="true"></i> <span th:text="#{common.nuevo}">Nuevo</span>
                         </a>
                     </div>
                     <div class="panel-body">
                         <div th:if="${dashboard.ultimosPacientes.isEmpty()}" class="empty-state">
-                            <p>No hay pacientes registrados.</p>
+                            <i class="fas fa-hospital-user empty-icon" aria-hidden="true"></i>
+                            <p th:text="#{dashboard.sin-pacientes}">No hay pacientes registrados.</p>
                         </div>
-                        <div class="table-wrap" th:unless="${dashboard.ultimosPacientes.isEmpty()}">
+                        <div class="table-wrap" role="region" th:aria-label="#{dashboard.ultimos-pacientes}" aria-label="Últimos pacientes" tabindex="0"
+                            th:unless="${dashboard.ultimosPacientes.isEmpty()}">
                             <table class="table table-sm">
+                                <caption th:text="#{dashboard.ultimos-pacientes}">Últimos pacientes</caption>
                                 <thead>
                                     <tr>
-                                        <th>Nombre</th>
-                                        <th>DNI</th>
-                                        <th>Teléfono</th>
-                                        <th>O.Social</th>
+                                        <th scope="col" th:text="#{common.nombre}">Nombre</th>
+                                        <th scope="col" th:text="#{common.dni}">DNI</th>
+                                        <th scope="col" th:text="#{common.telefono}">Teléfono</th>
+                                        <th scope="col" th:text="#{paciente.obra-social}">Obra social</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -185,8 +245,9 @@
                                         <td th:text="${paciente.dni}">dni</td>
                                         <td th:text="${paciente.telefono}">tel</td>
                                         <td>
-                                            <span class="badge" th:classappend="${paciente.tieneOS} ? 'badge-success' : 'badge-secondary'"
-                                                th:text="${paciente.tieneOS} ? 'Sí' : 'No'">os</span>
+                                            <span class="badge"
+                                                th:classappend="${paciente.tieneOS} ? 'badge-success' : 'badge-secondary'"
+                                                th:text="${paciente.tieneOS} ? #messages.msg('common.si') : #messages.msg('common.no')">os</span>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -196,8 +257,11 @@
                 </div>
             </div>
         </main>
+
+        <footer th:replace="~{fragments/layout :: footer}"></footer>
     </div>
 
-    <script th:src="@{/js/app.js}" type="module"></script>
+    <div th:replace="~{fragments/layout :: scripts}"></div>
+
 </body>
 </html>
