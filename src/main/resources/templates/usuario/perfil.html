@@ -1,37 +1,41 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="es">
-<head th:replace="~{fragments/layout :: head('Mi Perfil')}"></head>
+<html xmlns:th="http://www.thymeleaf.org" th:lang="${idiomaActual}" lang="es">
+<head th:replace="~{fragments/layout :: head(#{usuario.perfil.titulo})}"></head>
 
 <body class="app">
 
+    <a class="skip-link" href="#main" th:text="#{a11y.saltar-contenido}">Saltar al contenido principal</a>
+
     <aside th:replace="~{fragments/layout :: sidebar}"></aside>
+
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
     <div class="app-main">
         <header th:replace="~{fragments/layout :: topbar}"></header>
 
-        <main class="app-content">
-            <h1 class="page-title">Mi Perfil</h1>
-            <p class="page-subtitle">Datos de su cuenta de usuario.</p>
+        <main class="app-content" id="main">
+            <h1 class="page-title" th:text="#{usuario.perfil.titulo}">Mi Perfil</h1>
+            <p class="page-subtitle" th:text="#{usuario.perfil.subtitulo}">Datos de su cuenta de usuario.</p>
 
             <div th:if="${exito}" class="alert alert-success" role="alert">
-                <i class="fas fa-check-circle"></i>
+                <i class="fas fa-check-circle" aria-hidden="true"></i>
                 <span th:text="${exito}">Exito</span>
-                <button class="alert-close" type="button" aria-label="Cerrar">&times;</button>
+                <button class="alert-close" type="button" th:aria-label="#{common.cerrar-alerta}" aria-label="Cerrar">&times;</button>
             </div>
             <div th:if="${error}" class="alert alert-error" role="alert">
-                <i class="fas fa-exclamation-circle"></i>
+                <i class="fas fa-exclamation-circle" aria-hidden="true"></i>
                 <span th:text="${error}">Error</span>
-                <button class="alert-close" type="button" aria-label="Cerrar">&times;</button>
+                <button class="alert-close" type="button" th:aria-label="#{common.cerrar-alerta}" aria-label="Cerrar">&times;</button>
             </div>
 
             <div class="dashboard-grid">
                 <div class="panel">
                     <div class="panel-header">
-                        <h2 class="panel-title">Datos de la cuenta</h2>
+                        <h2 class="panel-title" th:text="#{usuario.datos-cuenta}">Datos de la cuenta</h2>
                     </div>
                     <div class="panel-body">
-                        <p><strong>Usuario:</strong> <span th:text="${usuario.nombreUsuario}">usuario</span></p>
-                        <p><strong>Rol:</strong>
+                        <p><strong th:text="#{common.nombre-usuario} + ':'">Usuario:</strong> <span th:text="${usuario.nombreUsuario}">usuario</span></p>
+                        <p><strong th:text="#{common.rol} + ':'">Rol:</strong>
                             <span class="badge" th:classappend="'badge-' + ${#strings.toLowerCase(usuario.rol.name())}"
                                 th:text="${usuario.rol.name()}">rol</span>
                         </p>
@@ -40,24 +44,24 @@
 
                 <div class="panel">
                     <div class="panel-header">
-                        <h2 class="panel-title">Cambiar contraseña</h2>
+                        <h2 class="panel-title" th:text="#{usuario.cambiar-password}">Cambiar contraseña</h2>
                     </div>
                     <div class="panel-body">
                         <form th:action="@{/mi-perfil/cambiar-contrasena}" method="post">
                             <div class="form-grid">
                                 <div class="field">
-                                    <label class="field-label" for="contraseniaActual">Contraseña actual</label>
+                                    <label class="field-label" for="contraseniaActual" th:text="#{usuario.password.actual}">Contraseña actual</label>
                                     <input class="input" type="password" id="contraseniaActual"
-                                        name="contraseniaActual" placeholder="Contraseña actual" required>
+                                        name="contraseniaActual" th:placeholder="#{usuario.password.actual}" placeholder="Contraseña actual" required>
                                 </div>
                                 <div class="field">
-                                    <label class="field-label" for="contraseniaNueva">Nueva contraseña</label>
+                                    <label class="field-label" for="contraseniaNueva" th:text="#{usuario.password.nueva}">Nueva contraseña</label>
                                     <input class="input" type="password" id="contraseniaNueva"
-                                        name="contraseniaNueva" placeholder="Nueva contraseña" required>
+                                        name="contraseniaNueva" th:placeholder="#{usuario.password.nueva}" placeholder="Nueva contraseña" required>
                                 </div>
                             </div>
                             <div class="actions mt-24">
-                                <button class="btn btn-primary" type="submit">Cambiar contraseña</button>
+                                <button class="btn btn-primary" type="submit" th:text="#{usuario.cambiar-password}">Cambiar contraseña</button>
                             </div>
                         </form>
                     </div>
