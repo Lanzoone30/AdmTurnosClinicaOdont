@@ -1,6 +1,6 @@
 // Generic confirmation for destructive forms. Any <form data-confirm="...">
 // opens the shared dialog before submitting, replacing inline confirm().
-import { qsa } from './dom.js';
+import { qsa, markPending } from './dom.js';
 import { confirmDialog } from './dialog.js';
 
 export function initConfirmForms() {
@@ -11,7 +11,10 @@ export function initConfirmForms() {
         title: 'Confirmar',
         text: form.dataset.confirm,
       });
-      if (confirmed) form.submit();
+      if (confirmed) {
+        markPending(form);
+        form.submit();
+      }
     });
   });
 }
