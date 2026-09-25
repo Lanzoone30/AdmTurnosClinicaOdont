@@ -1,69 +1,82 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="es">
-<head th:replace="~{fragments/layout :: head('Ver Turnos')}"></head>
+<html xmlns:th="http://www.thymeleaf.org" th:lang="${idiomaActual}" lang="es">
+<head th:replace="~{fragments/layout :: head(#{turno.titulo.ver})}"></head>
 
 <body class="app">
 
+    <a class="skip-link" href="#main" th:text="#{a11y.saltar-contenido}">Saltar al contenido principal</a>
+
     <aside th:replace="~{fragments/layout :: sidebar}"></aside>
+
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
     <div class="app-main">
         <header th:replace="~{fragments/layout :: topbar}"></header>
 
-        <main class="app-content">
-            <h1 class="page-title">Ver Turnos</h1>
-            <p class="page-subtitle">A continuación podrá visualizar la lista completa de turnos.</p>
+        <main class="app-content" id="main">
+            <h1 class="page-title" th:text="#{turno.titulo.ver}">Ver Turnos</h1>
+            <p class="page-subtitle" th:text="#{turno.subtitulo.ver}">A continuación podrá visualizar la lista completa de turnos.</p>
+
+            <div th:if="${exito}" class="alert alert-success" role="status">
+                <i class="fas fa-check-circle" aria-hidden="true"></i>
+                <span th:text="${exito}">Éxito</span>
+                <button class="alert-close" type="button" th:aria-label="#{common.cerrar-alerta}" aria-label="Cerrar">&times;</button>
+            </div>
 
             <div th:if="${error}" class="alert alert-error" role="alert">
-                <i class="fas fa-exclamation-circle"></i>
+                <i class="fas fa-exclamation-circle" aria-hidden="true"></i>
                 <span th:text="${error}">Error</span>
-                <button class="alert-close" type="button" aria-label="Cerrar">&times;</button>
+                <button class="alert-close" type="button" th:aria-label="#{common.cerrar-alerta}" aria-label="Cerrar">&times;</button>
             </div>
 
             <div class="panel">
                 <div class="panel-header">
-                    <h2 class="panel-title">Turnos</h2>
+                    <h2 class="panel-title" th:text="#{nav.turnos}">Turnos</h2>
                     <a class="btn btn-primary" th:href="@{/turnos/nuevo}">
-                        <i class="fas fa-plus"></i>
-                        Nuevo Turno
+                        <i class="fas fa-plus" aria-hidden="true"></i>
+                        <span th:text="#{turno.nuevo}">Nuevo Turno</span>
                     </a>
                 </div>
                 <div class="panel-body">
                     <form class="filters" th:action="@{/turnos}" method="get">
                         <div class="field">
-                            <label class="field-label" for="afeccion">Buscar por afección</label>
+                            <label class="field-label" for="afeccion" th:text="#{turno.buscar-afeccion}">Buscar por afección</label>
                             <input class="input" type="text" id="afeccion" name="afeccion"
-                                th:value="${afeccionFiltro}" placeholder="Ej: Dolor de muelas">
+                                th:value="${afeccionFiltro}" th:placeholder="#{turno.placeholder.afeccion}" placeholder="Ej: Dolor de muelas">
                         </div>
                         <div class="field">
-                            <label class="field-label" for="estado">Estado</label>
+                            <label class="field-label" for="estado" th:text="#{turno.estado}">Estado</label>
                             <select class="input" id="estado" name="estado">
-                                <option value="">Todos</option>
+                                <option value="" th:text="#{common.todos}">Todos</option>
                                 <option th:each="e : ${estados}" th:value="${e.name()}"
-                                    th:text="${e.name()}"
+                                    th:text="${#messages.msg('estado.' + #strings.replace(e.name().toLowerCase(), '_', '-'))}"
                                     th:selected="${estadoFiltro != null and estadoFiltro.name() == e.name()}"></option>
                             </select>
                         </div>
                         <div class="field">
                             <button class="btn btn-primary" type="submit">
-                                <i class="fas fa-search"></i> Filtrar
+                                <i class="fas fa-search" aria-hidden="true"></i> <span th:text="#{common.filtrar}">Filtrar</span>
                             </button>
                         </div>
                     </form>
                     <div th:if="${turnos.isEmpty()}" class="empty-state">
-                        <p>No hay turnos que coincidan con los filtros.</p>
+                        <i class="fas fa-calendar-times empty-icon" aria-hidden="true"></i>
+                        <p th:text="#{turno.sin-filtros}">No hay turnos que coincidan con los filtros.</p>
+                        <a class="btn btn-primary btn-sm" th:href="@{/turnos/nuevo}" th:text="#{turno.nuevo.min}">Nuevo turno</a>
                     </div>
-                    <div class="table-wrap" th:unless="${turnos.isEmpty()}">
+                    <div class="table-wrap" role="region" th:aria-label="#{turno.listado}" aria-label="Listado de turnos" tabindex="0" th:unless="${turnos.isEmpty()}">
                         <table class="table">
+<caption th:text="#{turno.listado}">Listado de turnos</caption>
                             <thead>
                                 <tr>
-                                    <th>Afección</th>
-                                    <th>Fecha</th>
-                                    <th>Hora</th>
-                                    <th>Doctor</th>
-                                    <th>Paciente</th>
-                                    <th>Estado</th>
-                                    <th>Nota clínica</th>
-                                    <th class="text-right">Acción</th>
+                                    <th scope="col" th:text="#{turno.afeccion}">Afección</th>
+                                    <th scope="col" th:text="#{turno.fecha}">Fecha</th>
+                                    <th scope="col" th:text="#{turno.hora}">Hora</th>
+                                    <th scope="col" th:text="#{turno.odontologo}">Doctor</th>
+                                    <th scope="col" th:text="#{turno.paciente}">Paciente</th>
+                                    <th scope="col" th:text="#{turno.estado}">Estado</th>
+                                    <th scope="col" th:text="#{turno.nota-clinica}">Nota clínica</th>
+                                    <th scope="col" class="text-right" th:text="#{common.accion}">Acción</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -75,17 +88,17 @@
                                     <td th:text="${turno.paciente != null ? turno.paciente.nombre + ' ' + turno.paciente.apellido : ''}">Paciente</td>
                                     <td>
                                         <span class="badge" th:classappend="'badge-' + ${#strings.toLowerCase(turno.estado.name())}"
-                                            th:text="${turno.estado.name()}">estado</span>
+                                            th:text="${#messages.msg('estado.' + #strings.replace(turno.estado.name().toLowerCase(), '_', '-'))}">estado</span>
                                     </td>
-                                    <td th:text="${turno.notaClinica != null and !turno.notaClinica.isBlank()} ? ${turno.notaClinica} : '—'">—</td>
+                                    <td th:text="${turno.notaClinica != null and !turno.notaClinica.isBlank()} ? ${turno.notaClinica} : '-'">-</td>
                                     <td>
                                         <div class="actions text-right">
                                             <form class="inline-form"
                                                 th:if="${turno.estado.name() == 'PENDIENTE'}"
                                                 th:action="@{/turnos/{id}/estado(id=${turno.id})}" method="post">
                                                 <input type="hidden" name="estado" value="CONFIRMADO">
-                                                <button class="btn-icon btn-icon-edit" type="submit" title="Confirmar">
-                                                    <i class="fas fa-check"></i>
+                                                <button class="btn-icon btn-icon-edit" type="submit" th:title="#{common.confirmar}" th:aria-label="#{common.confirmar}" title="Confirmar" aria-label="Confirmar">
+                                                    <i class="fas fa-check" aria-hidden="true"></i>
                                                 </button>
                                             </form>
                                             <form class="inline-form"
@@ -94,8 +107,8 @@
                                                 <input type="hidden" name="estado" value="REALIZADO">
                                                 <input type="hidden" name="motivo" value="">
                                                 <button class="btn-icon btn-icon-edit" type="submit"
-                                                    title="Marcar realizado (requiere nota clínica)">
-                                                    <i class="fas fa-tooth"></i>
+                                                    th:title="#{turno.marcar-realizado}" th:aria-label="#{turno.marcar-realizado}" title="Marcar realizado (requiere nota clínica)" aria-label="Marcar realizado (requiere nota clínica)">
+                                                    <i class="fas fa-tooth" aria-hidden="true"></i>
                                                 </button>
                                             </form>
                                             <form class="inline-form"
@@ -104,8 +117,8 @@
                                                 data-estado-dialog>
                                                 <input type="hidden" name="estado" value="CANCELADO">
                                                 <input type="hidden" name="motivo" value="">
-                                                <button class="btn-icon btn-icon-delete" type="submit" title="Cancelar">
-                                                    <i class="fas fa-ban"></i>
+                                                <button class="btn-icon btn-icon-delete" type="submit" th:title="#{common.cancelar}" title="Cancelar" th:aria-label="#{common.cancelar}" aria-label="Cancelar">
+                                                    <i class="fas fa-ban" aria-hidden="true"></i>
                                                 </button>
                                             </form>
                                             <form class="inline-form"
@@ -114,22 +127,22 @@
                                                 data-estado-dialog>
                                                 <input type="hidden" name="estado" value="NO_ASISTIO">
                                                 <input type="hidden" name="motivo" value="">
-                                                <button class="btn-icon btn-icon-delete" type="submit" title="No asistió">
-                                                    <i class="fas fa-user-slash"></i>
+                                                <button class="btn-icon btn-icon-delete" type="submit" th:title="#{turno.no-asistio}" th:aria-label="#{turno.no-asistio}" title="No asistió" aria-label="No asistió">
+                                                    <i class="fas fa-user-slash" aria-hidden="true"></i>
                                                 </button>
                                             </form>
                                             <a class="btn-icon btn-icon-edit"
                                                 th:href="@{/turnos/editar/{id}(id=${turno.id})}"
-                                                title="Editar">
-                                                <i class="fas fa-pen"></i>
+                                                th:title="#{common.editar}" th:aria-label="#{common.editar}" title="Editar" aria-label="Editar">
+                                                <i class="fas fa-pen" aria-hidden="true"></i>
                                             </a>
                                             <form class="inline-form"
                                                 th:action="@{/turnos/eliminar/{id}(id=${turno.id})}"
                                                 method="post"
-                                                data-confirm="¿Eliminar el turno?">
+                                                th:attr="data-confirm=#{common.confirmar-eliminar-turno}">
                                                 <button class="btn-icon btn-icon-delete" type="submit"
-                                                    title="Eliminar">
-                                                    <i class="fas fa-trash"></i>
+                                                    th:title="#{common.eliminar}" th:aria-label="#{common.eliminar}" title="Eliminar" aria-label="Eliminar">
+                                                    <i class="fas fa-trash" aria-hidden="true"></i>
                                                 </button>
                                             </form>
                                         </div>
