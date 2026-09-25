@@ -1,14 +1,16 @@
 /* Native <dialog> used for confirmations across sections (turno, paciente, ...). */
 .modal {
   border: 0;
-  border-radius: var(--radius);
+  border-radius: var(--radius-lg);
   padding: 0;
+  background: var(--surface);
+  color: var(--text);
   box-shadow: var(--shadow-lg);
   width: min(440px, calc(100vw - 32px));
 }
 
 .modal::backdrop {
-  background: rgba(90, 92, 105, 0.5);
+  background: rgba(7, 32, 36, 0.55);
 }
 
 .modal-form {
@@ -19,7 +21,7 @@
   margin: 0 0 8px;
   font-size: 18px;
   font-weight: 800;
-  color: var(--primary-dark);
+  color: var(--primary);
 }
 
 .modal-text {
