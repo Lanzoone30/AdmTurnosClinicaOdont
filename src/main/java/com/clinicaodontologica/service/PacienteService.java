@@ -19,6 +19,7 @@ public class PacienteService {
 
     private final PacienteRepository pacienteRepository;
     private final TurnoRepository turnoRepository;
+    private final Mensajes mensajes;
 
     /**
      * Lista todos los pacientes.
@@ -71,7 +72,7 @@ public class PacienteService {
     @Transactional(readOnly = true)
     public Paciente obtener(Integer id) {
         return pacienteRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Paciente no encontrado: " + id));
+                .orElseThrow(() -> new IllegalArgumentException(mensajes.get("error.paciente.no-encontrado", id)));
     }
 
     /**
@@ -118,7 +119,7 @@ public class PacienteService {
         }
         Paciente existente = buscarPorDni(dni);
         if (existente != null && !existente.getId().equals(idPacienteExcluido)) {
-            throw new IllegalArgumentException("Ya existe un paciente con el DNI " + dni);
+            throw new IllegalArgumentException(mensajes.get("error.paciente.dni-duplicado", dni));
         }
     }
 
@@ -131,7 +132,7 @@ public class PacienteService {
     public void eliminar(Integer id) {
         if (turnoRepository.existsByPacienteId(id)) {
             throw new IllegalArgumentException(
-                    "No se puede eliminar el paciente: tiene turnos registrados");
+                    mensajes.get("error.paciente.eliminar-con-turnos"));
         }
         pacienteRepository.deleteById(id);
     }
