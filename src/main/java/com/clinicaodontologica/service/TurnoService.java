@@ -47,6 +47,7 @@ public class TurnoService {
     private final TurnoRepository turnoRepository;
     private final OdontologoRepository odontologoRepository;
     private final PacienteRepository pacienteRepository;
+    private final Mensajes mensajes;
 
     /**
      * Lista todos los turnos.
@@ -144,7 +145,7 @@ public class TurnoService {
     public List<Turno> listarPorPacienteLogueado(String nombreUsuario) {
         Paciente paciente = pacienteRepository.findByUsuarioNombreUsuario(nombreUsuario)
                 .orElseThrow(() -> new IllegalArgumentException(
-                        "No hay paciente vinculado al usuario: " + nombreUsuario));
+                        mensajes.get("error.turno.paciente-sin-vinculo", nombreUsuario)));
         return listarPorPaciente(paciente.getId());
     }
 
@@ -163,7 +164,7 @@ public class TurnoService {
                                                       LocalDate inicio, LocalDate fin) {
         Odontologo odontologo = odontologoRepository.findByUsuarioNombreUsuario(nombreUsuario)
                 .orElseThrow(() -> new IllegalArgumentException(
-                        "No hay odontologo vinculado al usuario: " + nombreUsuario));
+                        mensajes.get("error.turno.odontologo-sin-vinculo", nombreUsuario)));
         return listarPorOdontologoYPeriodo(odontologo.getId(), inicio, fin);
     }
 
@@ -177,7 +178,7 @@ public class TurnoService {
     @Transactional(readOnly = true)
     public Turno obtener(Integer id) {
         return turnoRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Turno no encontrado: " + id));
+                .orElseThrow(() -> new IllegalArgumentException(mensajes.get("error.turno.no-encontrado", id)));
     }
 
     /**
@@ -218,9 +219,9 @@ public class TurnoService {
     public Turno crear(LocalDate fechaTurno, LocalTime horaTurno, String afeccion,
                        Integer odontologoId, Integer pacienteId, EstadoTurno estado) {
         Odontologo odontologo = odontologoRepository.findById(odontologoId)
-                .orElseThrow(() -> new IllegalArgumentException("Odontologo no encontrado: " + odontologoId));
+                .orElseThrow(() -> new IllegalArgumentException(mensajes.get("error.odontologo.no-encontrado", odontologoId)));
         Paciente paciente = pacienteRepository.findById(pacienteId)
-                .orElseThrow(() -> new IllegalArgumentException("Paciente no encontrado: " + pacienteId));
+                .orElseThrow(() -> new IllegalArgumentException(mensajes.get("error.paciente.no-encontrado", pacienteId)));
         validarSinChoque(odontologoId, fechaTurno, horaTurno, null);
         validarDentroDeHorario(odontologo, fechaTurno, horaTurno);
 
@@ -309,22 +310,22 @@ public class TurnoService {
     public Turno cambiarEstado(Integer id, EstadoTurno nuevoEstado, String motivo) {
         Turno turno = obtener(id);
         if (nuevoEstado == null) {
-            throw new IllegalArgumentException("El estado es obligatorio");
+            throw new IllegalArgumentException(mensajes.get("error.turno.estado-obligatorio"));
         }
         Set<EstadoTurno> permitidos = TRANSICIONES.getOrDefault(turno.getEstado(), EnumSet.noneOf(EstadoTurno.class));
         if (!permitidos.contains(nuevoEstado)) {
             throw new IllegalArgumentException(
-                    "No se puede pasar de " + turno.getEstado() + " a " + nuevoEstado);
+                    mensajes.get("error.turno.transicion-invalida", turno.getEstado(), nuevoEstado));
         }
         if (nuevoEstado == EstadoTurno.CANCELADO) {
             if (motivo == null || motivo.isBlank()) {
-                throw new IllegalArgumentException("El motivo de cancelacion es obligatorio");
+                throw new IllegalArgumentException(mensajes.get("error.turno.motivo-obligatorio"));
             }
             turno.setMotivoCancelacion(motivo.trim());
         }
         if (nuevoEstado == EstadoTurno.REALIZADO
                 && (turno.getNotaClinica() == null || turno.getNotaClinica().isBlank())) {
-            throw new IllegalArgumentException("La nota clinica es obligatoria para marcar el turno como realizado");
+            throw new IllegalArgumentException(mensajes.get("error.turno.nota-obligatoria"));
         }
         turno.setEstado(nuevoEstado);
         return turnoRepository.save(turno);
@@ -365,7 +366,7 @@ public class TurnoService {
             }
         }
         throw new IllegalArgumentException(
-                "El odontologo no atiende el " + dia + " a las " + hora);
+                mensajes.get("error.turno.fuera-horario", dia, hora));
     }
 
     /**
@@ -387,7 +388,7 @@ public class TurnoService {
                         && !t.getId().equals(turnoExcluido));
         if (choque) {
             throw new IllegalArgumentException(
-                    "El odontologo ya tiene un turno el " + fecha + " a las " + hora);
+                    mensajes.get("error.turno.choque", fecha, hora));
         }
     }
 }
