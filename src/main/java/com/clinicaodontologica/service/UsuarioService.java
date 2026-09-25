@@ -21,6 +21,7 @@ public class UsuarioService {
     private final UsuarioRepository usuarioRepository;
     private final OdontologoRepository odontologoRepository;
     private final PasswordEncoder passwordEncoder;
+    private final Mensajes mensajes;
 
     /**
      * Lista todos los usuarios del sistema.
@@ -42,7 +43,7 @@ public class UsuarioService {
     @Transactional(readOnly = true)
     public Usuario obtener(Integer id) {
         return usuarioRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado: " + id));
+                .orElseThrow(() -> new IllegalArgumentException(mensajes.get("error.usuario.no-encontrado-id", id)));
     }
 
     /**
@@ -70,6 +71,20 @@ public class UsuarioService {
     }
 
     /**
+     * Guarda la preferencia de idioma del usuario.
+     *
+     * @param nombreUsuario nombre de usuario
+     * @param idioma codigo de idioma ("es" o "en")
+     */
+    @Transactional
+    public void cambiarIdioma(String nombreUsuario, String idioma) {
+        usuarioRepository.findByNombreUsuario(nombreUsuario).ifPresent(usuario -> {
+            usuario.setIdioma(idioma);
+            usuarioRepository.save(usuario);
+        });
+    }
+
+    /**
      * Cambia la contrasenia de un usuario validando la contrasenia actual.
      *
      * @param nombreUsuario nombre de usuario
@@ -81,12 +96,12 @@ public class UsuarioService {
     public void cambiarContrasenia(String nombreUsuario, String contraseniaActual,
                                    String contraseniaNueva) {
         Usuario usuario = usuarioRepository.findByNombreUsuario(nombreUsuario)
-                .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado: " + nombreUsuario));
+                .orElseThrow(() -> new IllegalArgumentException(mensajes.get("error.usuario.no-encontrado", nombreUsuario)));
         if (!passwordEncoder.matches(contraseniaActual, usuario.getContrasenia())) {
-            throw new IllegalArgumentException("La contrasenia actual no es correcta");
+            throw new IllegalArgumentException(mensajes.get("error.usuario.password-actual"));
         }
         if (contraseniaNueva == null || contraseniaNueva.isBlank()) {
-            throw new IllegalArgumentException("La nueva contrasenia no puede estar vacia");
+            throw new IllegalArgumentException(mensajes.get("error.usuario.password-vacia"));
         }
         usuario.setContrasenia(passwordEncoder.encode(contraseniaNueva));
         usuarioRepository.save(usuario);
@@ -119,7 +134,7 @@ public class UsuarioService {
     public void eliminar(Integer id) {
         if (odontologoRepository.existsByUsuarioId(id)) {
             throw new IllegalArgumentException(
-                    "No se puede eliminar el usuario: esta asociado a un odontologo");
+                    mensajes.get("error.usuario.eliminar-asociado"));
         }
         usuarioRepository.deleteById(id);
     }
