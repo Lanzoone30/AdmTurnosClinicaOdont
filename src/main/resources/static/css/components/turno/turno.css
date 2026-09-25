@@ -1,19 +1,23 @@
 /* Badges por estado de turno */
 .badge-pendiente {
-  background: rgba(246, 194, 62, 0.2);
-  color: #966a00;
+  background: var(--badge-amber-bg);
+  color: var(--badge-amber-fg);
+}
+
+.badge-confirmado {
+  background: var(--badge-blue-bg);
+  color: var(--badge-blue-fg);
 }
 
 .badge-cancelado {
-  background: rgba(231, 74, 59, 0.12);
-  color: #c03024;
+  background: var(--badge-red-bg);
+  color: var(--badge-red-fg);
 }
 
 .badge-realizado {
-  background: rgba(54, 185, 204, 0.14);
-  color: #1d7d8c;
+  background: var(--badge-green-bg);
+  color: var(--badge-green-fg);
 }
-
 
 .filters {
   display: grid;
@@ -34,4 +38,3 @@
 .turno-alergias {
   margin-top: 4px;
 }
-
