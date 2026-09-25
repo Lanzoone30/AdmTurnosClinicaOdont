@@ -1,24 +1,28 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="es">
-<head th:replace="~{fragments/layout :: head('Error')}"></head>
+<html xmlns:th="http://www.thymeleaf.org" th:lang="${idiomaActual}" lang="es">
+<head th:replace="~{fragments/layout :: head(#{error.titulo})}"></head>
 
 <body class="app">
 
+    <a class="skip-link" href="#main" th:text="#{a11y.saltar-contenido}">Saltar al contenido principal</a>
+
     <aside th:replace="~{fragments/layout :: sidebar}"></aside>
+
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
     <div class="app-main">
         <header th:replace="~{fragments/layout :: topbar}"></header>
 
-        <main class="app-content">
+        <main class="app-content" id="main">
             <div class="panel">
                 <div class="panel-body">
                     <div class="error-box">
-                        <div class="error-code">404</div>
-                        <h1 class="error-title">Página no encontrada</h1>
-                        <p class="error-text">Parece que la página que busca no existe.</p>
+                        <div class="error-code" th:if="${codigo != null}" th:text="${codigo}">404</div>
+                        <h1 class="error-title" th:text="${errorTitulo}">Página no encontrada</h1>
+                        <p class="error-text" th:text="${errorTexto}">Parece que la página que busca no existe.</p>
                         <a class="btn btn-primary" th:href="@{/}">
-                            <i class="fas fa-arrow-left"></i>
-                            Volver al inicio
+                            <i class="fas fa-arrow-left" aria-hidden="true"></i>
+                            <span th:text="#{common.volver-inicio}">Volver al inicio</span>
                         </a>
                     </div>
                 </div>
